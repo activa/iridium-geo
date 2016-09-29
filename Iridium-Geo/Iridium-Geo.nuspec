@@ -19,6 +19,6 @@
     </dependencies>
   </metadata>
   <files>
-    <file src="*.dll" target="lib\portable-net45+win8+wpa81" />
+    <file src="Iridium.Geo.dll" target="lib\portable-net45+win8+wpa81" />
   </files>
 </package>

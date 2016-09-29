@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <!-- A reference to the entire .NET Framework is automatically included -->
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Geography\Geohash.cs" />
     <Compile Include="Geography\GeoProjection.cs" />
     <Compile Include="Geography\IdentityProjection.cs" />
