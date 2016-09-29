@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package>
+  <metadata>
+    <id>iridium.geo</id>
+    <version>1.0.0</version>
+    <title>Iridium-Geo</title>
+    <authors>Philippe Leybaert</authors>
+    <owners>Philippe Leybaert</owners>
+    <licenseUrl>https://raw.githubusercontent.com/activa/iridium-geo/master/LICENSE</licenseUrl>
+    <projectUrl>http://github.com/activa/iridium-geo</projectUrl>
+    <iconUrl>http://dstyler.com/vici/32x32/im-_IconPlain100-w32-h32.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Portable light-weight geometry/geography library</description>
+    <language>en-US</language>
+    <tags>iridium geo geometry geography gis</tags>
+    <copyright>Copyright 2015-2016 Philippe Leybaert</copyright>
+    <dependencies>
+      <dependency id="iridium.core" version="1.1.1" />
+    </dependencies>
+  </metadata>
+  <files>
+    <file src="*.dll" target="lib\portable-net45+win8+wpa81" />
+  </files>
+</package>
