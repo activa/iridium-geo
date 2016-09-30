@@ -74,6 +74,11 @@ namespace Iridium.Geo
             return Transform(matrix);
         }
 
+        public Point ClosestPoint(Point p)
+        {
+            throw new NotImplementedException();
+        }
+
         public Ellipse Scale(double factor, Point origin = null)
         {
             return new Ellipse(Center.Scale(factor,origin), RadiusX*factor, RadiusY * factor, Angle);

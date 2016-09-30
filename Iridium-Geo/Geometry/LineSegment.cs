@@ -114,20 +114,18 @@ namespace Iridium.Geo
 
             var len2 = MathUtil.Square(vec2.X) + MathUtil.Square(vec2.Y);
 
-            if (len2 == 0.0)
+            if (len2 <= double.Epsilon)
                 return P1;
 
             var t = (vec1.X*vec2.X + vec1.Y*vec2.Y)/len2;
 
-            if (t <= 0.0)
-                return P1;
-            if (t >= 1.0)
-                return P2;
+            if (t <= 0.0) return P1;
+            if (t >= 1.0) return P2;
 
             return new Point(P1.X + vec2.X * t, P1.Y + vec2.Y * t);
         }
 
-	    public double DistanceTo(Point point)
+        public double DistanceTo(Point point)
 	    {
 	        return ClosestPoint(point).DistanceTo(point);
 	    }

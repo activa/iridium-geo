@@ -49,6 +49,26 @@ namespace Iridium.Geo
             return points.Select(p => new LatLon(p, projection));
         }
 
+        public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p)
+        {
+            Point closest = null;
+            double minDistance = double.MaxValue;
+
+            foreach (var geometry in geometries)
+            {
+                var pt = geometry.ClosestPoint(p);
+                var distance = pt.DistanceTo(p);
+
+                if (distance < minDistance)
+                {
+                    minDistance = distance;
+                    closest = pt;
+                }
+            }
+
+            return closest;
+        }
+
         public static double Angle(Point p1, Point p2)
         {
             return Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);

@@ -57,6 +57,11 @@ namespace Iridium.Geo
             throw new NotSupportedException();
         }
 
+        public Point ClosestPoint(Point p)
+        {
+            return new Polygon(new[] {P1,new Point(P2.X,P1.Y),P2, new Point(P1.X,P2.Y)}).ClosestPoint(p);
+        }
+
         public Point Center()
         {
             return new Point(P1.X + Width/2, P1.Y + Height/2);

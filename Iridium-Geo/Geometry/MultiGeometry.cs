@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,6 +47,11 @@ namespace Iridium.Geo
         IGeometry IGeometry.Transform(AffineMatrix2D matrix)
         {
             return Transform(matrix);
+        }
+
+        public Point ClosestPoint(Point p)
+        {
+            return Geometries.ClosestPoint(p);
         }
 
         public MultiGeometry Scale(double factor, Point origin = null)

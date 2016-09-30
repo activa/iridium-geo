@@ -39,7 +39,7 @@ namespace Iridium.Geo
 
         private static string ToWKT(IEnumerable<Point> points)
         {
-            return string.Join(",", points.Select(ToWKT));
+            return string.Join(",", points.Select(p => ToWKT(p.X,p.Y)));
         }
 
         public static string ToWKT(Point p)
@@ -54,7 +54,7 @@ namespace Iridium.Geo
 
         public static string ToWKT(MultiPolygon multiPolygon)
         {
-            return $"MULTILINESTRING (({string.Join("),(",multiPolygon.Polygons.Select(ToWKT))}))";
+            return $"MULTILINESTRING (({string.Join("),(",multiPolygon.Polygons.Select(p => ToWKT(p.Points)))}))";
         }
 
         public static string ToWKT(MultiPoint multiPoint)

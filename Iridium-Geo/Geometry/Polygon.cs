@@ -89,15 +89,14 @@ namespace Iridium.Geo
             return Translate(dx, dy);
         }
 
-
         public Point ClosestPoint(Point p)
         {
             Point closest = null;
             double minDistance = double.MaxValue;
 
-            Point p1 = Points[Points.Count-1];
+            Point p1 = Points[Closed ? Points.Count-1 : 0];
 
-            foreach (Point p2 in Points)
+            foreach (Point p2 in Points.Skip(Closed ? 0 : 1))
             {
                 LineSegment line = new LineSegment(p1,p2);
 
@@ -110,11 +109,16 @@ namespace Iridium.Geo
                     closest = closestPoint;
                     minDistance = distance;
                 }
-                p1 = p2;
 
+                p1 = p2;
             }
 
             return closest;
+        }
+
+        public double DistanceTo(Point p)
+        {
+            return ClosestPoint(p).DistanceTo(p);
         }
 
         public IEnumerable<LineSegment> Segments

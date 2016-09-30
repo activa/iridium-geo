@@ -45,6 +45,11 @@ namespace Iridium.Geo
 	        throw new NotImplementedException();
 	    }
 
+        public Point ClosestPoint(Point p)
+        {
+            return new Point(p, Center.AngleTo(p), Radius);
+        }
+
         IGeometry IGeometry.Transform(AffineMatrix2D matrix)
         {
             return Transform(matrix);

@@ -7,6 +7,8 @@ namespace Iridium.Geo
         IGeometry Rotate(double angle, Point origin = null);
         IGeometry Scale(double factor, Point origin = null);
         IGeometry Transform(AffineMatrix2D matrix);
+
+        Point ClosestPoint(Point p);
         //double DistanceTo(IGeometry geometry);
     }
 }

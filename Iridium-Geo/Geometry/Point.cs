@@ -68,6 +68,11 @@ namespace Iridium.Geo
             );
 	    }
 
+	    public Point ClosestPoint(Point p)
+	    {
+	        return this;
+	    }
+
 	    public Point Transform(Func<Point, Point> conversion)
 	    {
 	        return conversion(this);

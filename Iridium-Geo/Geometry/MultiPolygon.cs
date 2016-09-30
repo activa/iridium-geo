@@ -28,6 +28,11 @@ namespace Iridium.Geo
             return Transform(matrix);
         }
 
+        public Point ClosestPoint(Point p)
+        {
+            return Polygons.ClosestPoint(p);
+        }
+
         public MultiPolygon Scale(double factor, Point origin = null)
         {
             return new MultiPolygon(Polygons.Scale(factor, origin));

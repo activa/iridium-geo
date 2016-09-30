@@ -123,11 +123,12 @@ namespace Iridium_Geo_Test
         }
 
 
-        [TestCaseSource("WKT_TestData")]
-        public void ToWKT(IGeometry geometry, string wkt)
+        [TestCaseSource(nameof(WKT_TestData))]
+        public void ToWKT(IGeometry geometry, string expectedWKT)
         {
-            Assert.That(WKTWriter.ToWKT(geometry), Is.EqualTo(wkt));
-            
+            var generatedWKT = WKTWriter.ToWKT(geometry);
+
+            Assert.That(generatedWKT, Is.EqualTo(expectedWKT));
         }
 
         public static IEnumerable<TestCaseData> WKT_TestData()
@@ -135,6 +136,7 @@ namespace Iridium_Geo_Test
             yield return new TestCaseData(new Point(1,2),"POINT (1 2)");
             yield return new TestCaseData(new MultiPoint(new[] { new Point(1,2), new Point(9,10),  }), "MULTIPOINT (1 2,9 10)");
             yield return new TestCaseData(new Polygon(new[] { new Point(1, 2), new Point(9, 10), }), "LINESTRING (1 2,9 10)");
+            yield return new TestCaseData(new MultiPolygon(new [] {new Polygon(new [] { new Point(5,6), new Point(19,20) }), new Polygon(new[] { new Point(1, 2), new Point(9, 10) }) }), "MULTILINESTRING ((5 6,19 20),(1 2,9 10))");
 
         }
     }
