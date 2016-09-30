@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class MultiPolygon : IMultiGeometry, ITransformable<MultiPolygon>, IEnumerable<Polygon>
+    public class MultiPoint : IMultiGeometry, ITransformable<MultiPoint>, IEnumerable<Point>
     {
-        public IReadOnlyList<Polygon> Polygons { get; }
+        public IReadOnlyList<Point> Points { get; }
 
-        public MultiPolygon(IEnumerable<Polygon> polygons)
+        public MultiPoint(IEnumerable<Point> points)
         {
-            Polygons = polygons.ToArray();
+            Points = points.ToArray();
         }
 
         IGeometry IGeometry.Rotate(double angle, Point origin)
@@ -28,9 +28,9 @@ namespace Iridium.Geo
             return Transform(matrix);
         }
 
-        public MultiPolygon Scale(double factor, Point origin = null)
+        public MultiPoint Scale(double factor, Point origin = null)
         {
-            return new MultiPolygon(Polygons.Scale(factor, origin));
+            return new MultiPoint(Points.Scale(factor, origin));
         }
 
         IGeometry IGeometry.Translate(double dx, double dy)
@@ -38,24 +38,24 @@ namespace Iridium.Geo
             return Translate(dx, dy);
         }
 
-        public MultiPolygon Rotate(double angle, Point origin = null)
+        public MultiPoint Rotate(double angle, Point origin = null)
         {
-            return new MultiPolygon(Polygons.Rotate(angle, origin));
+            return new MultiPoint(Points.Rotate(angle, origin));
         }
 
         public Rectangle BoundingBox()
         {
-            return Polygons.BoundingBox();
+            return Points.BoundingBox();
         }
 
-        public MultiPolygon Translate(double dx, double dy)
+        public MultiPoint Translate(double dx, double dy)
         {
-            return new MultiPolygon(Polygons.Translate(dx,dy));
+            return new MultiPoint(Points.Translate(dx, dy));
         }
 
-        public MultiPolygon Transform(AffineMatrix2D matrix)
+        public MultiPoint Transform(AffineMatrix2D matrix)
         {
-            return new MultiPolygon(Polygons.Transform(matrix));
+            return new MultiPoint(Points.Transform(matrix));
         }
 
         IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
@@ -63,9 +63,9 @@ namespace Iridium.Geo
             return GetEnumerator();
         }
 
-        public IEnumerator<Polygon> GetEnumerator()
+        public IEnumerator<Point> GetEnumerator()
         {
-            return Polygons.GetEnumerator();
+            return Points.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()

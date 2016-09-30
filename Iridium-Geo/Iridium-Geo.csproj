@@ -48,9 +48,12 @@
     <Compile Include="Geometry\Ellipse.cs" />
     <Compile Include="Drawing\Gradient.cs" />
     <Compile Include="Geometry\IGeometry.cs" />
+    <Compile Include="Geometry\IMultiGeometry.cs" />
     <Compile Include="Geometry\ITransformable.cs" />
     <Compile Include="Geometry\LinearBezierCurve.cs" />
     <Compile Include="Geometry\LineSegment.cs" />
+    <Compile Include="Geometry\MultiGeometry.cs" />
+    <Compile Include="Geometry\MultiPoint.cs" />
     <Compile Include="Geometry\MultiPolygon.cs" />
     <Compile Include="Geometry\Point.cs" />
     <Compile Include="Geometry\PointBezierCurve.cs" />
@@ -63,6 +66,11 @@
     <Compile Include="Geometry\Vector.cs" />
     <Compile Include="Drawing\VectorImage.cs" />
     <Compile Include="GeometryUtil.cs" />
+    <Compile Include="Geometry\WKT\WKTParser.cs" />
+    <Compile Include="Geometry\WKT\WKTToken.cs" />
+    <Compile Include="Geometry\WKT\WKTTokenizer.cs" />
+    <Compile Include="Geometry\WKT\WKTTokenType.cs" />
+    <Compile Include="Geometry\WKT\WKTWriter.cs" />
     <Compile Include="MathUtil.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

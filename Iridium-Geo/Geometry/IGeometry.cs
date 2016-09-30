@@ -9,5 +9,4 @@ namespace Iridium.Geo
         IGeometry Transform(AffineMatrix2D matrix);
         //double DistanceTo(IGeometry geometry);
     }
-
 }
