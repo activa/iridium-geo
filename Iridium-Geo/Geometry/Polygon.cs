@@ -172,16 +172,17 @@ namespace Iridium.Geo
 
             int firstPoint = 0;
             int lastPoint = points.Count - 1;
-            List<int> pointIndexsToKeep = new List<int> { firstPoint, lastPoint };
+            List<int> indexesToKeep = new List<int> { firstPoint, lastPoint };
 
-            while (points[firstPoint].Equals(points[lastPoint]))
+            while (lastPoint >= firstPoint && points[firstPoint].Equals(points[lastPoint]))
             {
                 lastPoint--;
             }
 
-            DouglasPeuckerReduction(points, firstPoint, lastPoint, tolerance, ref pointIndexsToKeep);
+            if (lastPoint > firstPoint)
+                DouglasPeuckerReduction(points, firstPoint, lastPoint, tolerance, ref indexesToKeep);
 
-            return pointIndexsToKeep.OrderBy(i => i).Select(i => points[i]);
+            return indexesToKeep.OrderBy(i => i).Select(i => points[i]);
         }
 
         private static void DouglasPeuckerReduction(IReadOnlyList<Point> points, int firstPoint, int lastPoint, double tolerance, ref List<int> pointIndexsToKeep)

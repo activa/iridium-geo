@@ -1,6 +1,6 @@
 namespace Iridium.Geo.Geography
 {
-    public class IdentityProjection : GeoProjection
+    public class LatLonProjection : GeoProjection
     {
         public override Point ToPoint(LatLon latlon)
         {

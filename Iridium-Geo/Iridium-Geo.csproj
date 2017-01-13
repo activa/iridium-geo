@@ -34,9 +34,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Geography\GeographyExtensions.cs" />
     <Compile Include="Geography\Geohash.cs" />
     <Compile Include="Geography\GeoProjection.cs" />
-    <Compile Include="Geography\IdentityProjection.cs" />
+    <Compile Include="Geography\LatLonProjection.cs" />
     <Compile Include="Geography\LatLon.cs" />
     <Compile Include="Geography\WebMercatorProjection.cs" />
     <Compile Include="Geometry\Arc.cs" />

@@ -6,6 +6,6 @@ namespace Iridium.Geo.Geography
         public abstract LatLon ToLatLon(Point point);
 
         public static GeoProjection WebMercator = new WebMercatorProjection();
-        public static GeoProjection Identity = new IdentityProjection();
+        public static GeoProjection LatLon = new LatLonProjection();
     }
 }

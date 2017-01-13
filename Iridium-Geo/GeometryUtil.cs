@@ -44,10 +44,6 @@ namespace Iridium.Geo
             return geometries.Select(p => p.Transform(matrix));
         }
 
-        public static IEnumerable<LatLon> Project(this IEnumerable<Point> points, GeoProjection projection)
-        {
-            return points.Select(p => new LatLon(p, projection));
-        }
 
         public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p)
         {
@@ -110,9 +106,9 @@ namespace Iridium.Geo
         {
             double x1 = double.MaxValue, y1 = double.MaxValue, x2 = double.MinValue, y2 = double.MinValue;
 
-			foreach (var path in geometries)
+			foreach (var geometry in geometries)
             {
-                var box = path.BoundingBox();
+                var box = geometry.BoundingBox();
 
                 x1 = Math.Min(x1, box.MinX);
                 y1 = Math.Min(y1, box.MinY);
@@ -120,8 +116,10 @@ namespace Iridium.Geo
                 y2 = Math.Max(y2, box.MaxY);
             }
 
-            return new Rectangle(new Point(x1, y1), new Point(x2, y2));
+		    if (x1 == double.MaxValue)
+		        return null;
 
+            return new Rectangle(new Point(x1, y1), new Point(x2, y2));
         }
     }
 }

@@ -139,5 +139,38 @@ namespace Iridium_Geo_Test
             yield return new TestCaseData(new MultiPolygon(new [] {new Polygon(new [] { new Point(5,6), new Point(19,20) }), new Polygon(new[] { new Point(1, 2), new Point(9, 10) }) }), "MULTILINESTRING ((5 6,19 20),(1 2,9 10))");
 
         }
+
+        [Test]
+        public void TestSimplify()
+        {
+            Polygon polygon = new Polygon(new[] { new Point(20,10), new Point(20, 10), new Point(20, 10), new Point(20, 10), new Point(20, 10), });
+
+            var simplified = polygon.Simplify(0.1);
+
+            Assert.That(simplified.Points.Count, Is.EqualTo(2));
+            Assert.That(simplified.Points[0].X, Is.EqualTo(20));
+            Assert.That(simplified.Points[0].Y, Is.EqualTo(10));
+            Assert.That(simplified.Points[1].X, Is.EqualTo(20));
+            Assert.That(simplified.Points[1].Y, Is.EqualTo(10));
+        }
+
+        [Test]
+        public void TestSimplify2()
+        {
+            Polygon polygon = new Polygon(new[] { new Point(20, 10), new Point(21, 15), new Point(22, 16), new Point(23, 10), new Point(24, 24), });
+
+            var simplified = polygon.Simplify(0.000000001);
+
+            Assert.That(simplified.Points.Count, Is.EqualTo(polygon.Points.Count));
+
+            for (int i = 0; i < polygon.Points.Count; i++)
+            {
+                Assert.That(simplified.Points[i].X, Is.EqualTo(polygon.Points[i].X));
+                Assert.That(simplified.Points[i].Y, Is.EqualTo(polygon.Points[i].Y));
+            }
+        }
+
     }
+
+
 }

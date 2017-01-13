@@ -31,36 +31,49 @@ namespace Iridium.Geo.Geography
 {
     public class LatLon
     {
-        public double Lat { get; }
-        public double Lon { get; }
+        private readonly Point _point;
+
+        public double Lat => _point.Y;
+        public double Lon => _point.X;
 
         public double LatRadians => Lat*MathUtil.DegtoRadFactor;
         public double LonRadians => Lon*MathUtil.DegtoRadFactor;
 
         public LatLon(double lat, double lon)
         {
-            Lat = lat;
-            Lon = lon;
+            _point = new Point(lon,lat);
+        }
+
+        public LatLon(Point p)
+        {
+            _point = p;
         }
 
         public LatLon(Point p, GeoProjection projection)
         {
             var latlon = projection.ToLatLon(p);
 
-            Lat = latlon.Lat;
-            Lon = latlon.Lon;
+            _point = new Point(latlon.Lon, latlon.Lat);
         }
 
         public LatLon(string hash)
         {
-            var loc = Geohash.Decode(hash);
+            var latlon = Geohash.Decode(hash);
 
-            Lat = loc.Lat;
-            Lon = loc.Lon;
+            _point = new Point(latlon.Lon, latlon.Lat);
         }
 
         public string ToGeohash(int precision) => Geohash.Encode(this, precision);
 
+        public static implicit operator Point(LatLon latlon)
+        {
+            return latlon._point;
+        }
+
+        public static implicit operator LatLon(Point point)
+        {
+            return new LatLon(point);
+        }
 
         // ===Distance functions
 
