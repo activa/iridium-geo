@@ -76,8 +76,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Iridium-Core, Version=1.1.1.27280, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\iridium.core.1.1.1.15\lib\portable-net45+win8+wpa81\Iridium-Core.dll</HintPath>
+    <Reference Include="Iridium-Core, Version=1.1.2.33720, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\iridium.core.1.1.2.16\lib\portable-net45+win8+wpa81\Iridium-Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
