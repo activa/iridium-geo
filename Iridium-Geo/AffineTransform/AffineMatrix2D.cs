@@ -22,8 +22,8 @@ namespace Iridium.Geo
 
         private AffineMatrix2D()
         {
-            this.xx = 1;
-            this.yy = 1;
+            xx = 1;
+            yy = 1;
         }
 
         public AffineMatrix2D(double xx=1, double xy=0, double yx=0, double yy=1, double tx=0, double ty=0)
