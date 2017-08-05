@@ -4,13 +4,13 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class MultiPolygon : IMultiGeometry, ITransformable<MultiPolygon>, IEnumerable<Polygon>
+    public class MultiPolyline : IMultiGeometry<Polyline>, ITransformable<MultiPolyline>, IIntersectable<Poly>, IIntersectable<Polyline>, IIntersectable<Polygon>
     {
-        public IReadOnlyList<Polygon> Polygons { get; }
+        public IReadOnlyList<Polyline> Polylines { get; }
 
-        public MultiPolygon(IEnumerable<Polygon> polygons)
+        public MultiPolyline(IEnumerable<Polyline> polylines)
         {
-            Polygons = polygons.ToArray();
+            Polylines = polylines.ToArray();
         }
 
         IGeometry IGeometry.Rotate(double angle, Point origin)
@@ -28,54 +28,69 @@ namespace Iridium.Geo
             return Transform(matrix);
         }
 
-        public Point ClosestPoint(Point p)
-        {
-            return Polygons.ClosestPoint(p);
-        }
-
-        public MultiPolygon Scale(double factor, Point origin = null)
-        {
-            return new MultiPolygon(Polygons.Scale(factor, origin));
-        }
-
         IGeometry IGeometry.Translate(double dx, double dy)
         {
             return Translate(dx, dy);
         }
 
-        public MultiPolygon Rotate(double angle, Point origin = null)
+        public Point ClosestPoint(Point p)
         {
-            return new MultiPolygon(Polygons.Rotate(angle, origin));
+            return Polylines.ClosestPoint(p);
         }
 
         public Rectangle BoundingBox()
         {
-            return Polygons.BoundingBox();
+            return Polylines.BoundingBox();
         }
 
-        public MultiPolygon Translate(double dx, double dy)
+        public MultiPolyline Scale(double factor, Point origin = null)
         {
-            return new MultiPolygon(Polygons.Translate(dx,dy));
+            return new MultiPolyline(Polylines.Scale<Polyline>(factor, origin));
         }
 
-        public MultiPolygon Transform(AffineMatrix2D matrix)
+        public MultiPolyline Rotate(double angle, Point origin = null)
         {
-            return new MultiPolygon(Polygons.Transform(matrix));
+            return new MultiPolyline(Polylines.Rotate<Polyline>(angle, origin));
         }
 
-        IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
+        public MultiPolyline Translate(double dx, double dy)
+        {
+            return new MultiPolyline(Polylines.Translate<Polyline>(dx,dy));
+        }
+
+        public MultiPolyline Transform(AffineMatrix2D matrix)
+        {
+            return new MultiPolyline(Polylines.Transform<Polyline>(matrix));
+        }
+
+        IEnumerator<Polyline> IEnumerable<Polyline>.GetEnumerator()
         {
             return GetEnumerator();
         }
 
-        public IEnumerator<Polygon> GetEnumerator()
+        public IEnumerator<Polyline> GetEnumerator()
         {
-            return Polygons.GetEnumerator();
+            return Polylines.GetEnumerator();
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool Intersects(Poly p)
+        {
+            return Polylines.Any(p.Intersects);
+        }
+
+        public bool Intersects(Polyline p)
+        {
+            return Polylines.Any(p.Intersects);
+        }
+
+        public bool Intersects(Polygon p)
+        {
+            return Polylines.Any(p.Intersects);
         }
     }
 }

@@ -71,7 +71,6 @@ namespace Iridium.Geo
         public class StreamCharFeeder : CharFeeder
         {
             private readonly StreamReader _reader;
-            private char _c;
 
             public StreamCharFeeder(Stream stream)
             {
@@ -86,8 +85,6 @@ namespace Iridium.Geo
 
 
         private readonly CharFeeder _charFeeder;
-
-        //private JsonToken _token;
 
         private static readonly Dictionary<char, WKTTokenType> _tokenTypes = new Dictionary<char, WKTTokenType>()
         {

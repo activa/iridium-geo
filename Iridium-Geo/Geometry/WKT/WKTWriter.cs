@@ -15,12 +15,12 @@ namespace Iridium.Geo
             if (point != null)
                 return ToWKT(point, true);
 
-            var polygon = geometry as Polygon;
+            var polygon = geometry as Poly;
             
             if (polygon != null)
                 return ToWKT(polygon, true);
 
-            var mPolygon = geometry as MultiPolygon;
+            var mPolygon = geometry as MultiPolyline;
 
             if (mPolygon != null)
                 return ToWKT(mPolygon, true);
@@ -43,7 +43,7 @@ namespace Iridium.Geo
             return string.Join(",", points.Select(p => ToWKT(p, false)));
         }
 
-        private static string ToWKT(IEnumerable<Polygon> polygons)
+        private static string ToWKT(IEnumerable<Poly> polygons)
         {
             return string.Join(",", polygons.Select(polygon => "("+ToWKT(polygon.Points)+")"));
         }
@@ -53,14 +53,14 @@ namespace Iridium.Geo
             return includeWrapper ? $"POINT ({ToWKT(p.X, p.Y)})" : ToWKT(p.X, p.Y);
         }
 
-        private static string ToWKT(Polygon polygon, bool includeWrapper)
+        private static string ToWKT(Poly polygon, bool includeWrapper)
         {
             return includeWrapper ? $"LINESTRING ({ToWKT(polygon.Points)})" : ToWKT(polygon.Points);
         }
 
-        private static string ToWKT(MultiPolygon multiPolygon, bool includeWrapper)
+        private static string ToWKT(MultiPolyline multiPolygon, bool includeWrapper)
         {
-            return includeWrapper ? $"MULTILINESTRING ({ToWKT(multiPolygon.Polygons)})" : ToWKT(multiPolygon.Polygons);
+            return includeWrapper ? $"MULTILINESTRING ({ToWKT(multiPolygon.Polylines)})" : ToWKT(multiPolygon.Polylines);
         }
 
         private static string ToWKT(MultiPoint multiPoint, bool includeWrapper)

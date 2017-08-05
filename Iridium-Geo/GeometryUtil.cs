@@ -7,34 +7,36 @@ namespace Iridium.Geo
 {
     public static class GeometryUtil
     {
-        public const double PI2 = Math.PI * 2.0;
+        public const double PI2 = Math.PI*2.0;
 
         public static double ArcLength(double radius, double angle)
         {
-            return angle * radius;
+            return angle*radius;
         }
 
         public static double ArcAngle(double radius, double length)
         {
-            return length / radius;
+            return length/radius;
         }
 
         public static double NormalizeAngle(double angle)
         {
-            return angle > 0 ? angle%PI2 : angle%PI2 + PI2;
+            angle = ((angle % PI2) + PI2) % PI2;
+
+            return angle > Math.PI ? angle - Math.PI : angle;
         }
 
-        public static IEnumerable<T> Translate<T>(this IEnumerable<ITranslatable<T>> geometries,double dx, double dy)
+        public static IEnumerable<T> Translate<T>(this IEnumerable<ITranslatable<T>> geometries, double dx, double dy)
         {
-            return geometries.Select(p => p.Translate(dx,dy));
+            return geometries.Select(p => p.Translate(dx, dy));
         }
 
-        public static IEnumerable<T> Rotate<T>(this IEnumerable<IRotatable<T>> geometries,double angle, Point origin = null)
+        public static IEnumerable<T> Rotate<T>(this IEnumerable<IRotatable<T>> geometries, double angle, Point origin = null)
         {
-            return geometries.Select(p => p.Rotate(angle,origin));
+            return geometries.Select(p => p.Rotate(angle, origin));
         }
 
-		public static IEnumerable<T> Scale<T>(this IEnumerable<IScalable<T>> geometries, double factor, Point origin = null)
+        public static IEnumerable<T> Scale<T>(this IEnumerable<IScalable<T>> geometries, double factor, Point origin = null)
         {
             return geometries.Select(p => p.Scale(factor));
         }
@@ -44,11 +46,17 @@ namespace Iridium.Geo
             return geometries.Select(p => p.Transform(matrix));
         }
 
-
         public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p)
         {
+            double distance;
+
+            return ClosestPoint(geometries, p, out distance);
+        }
+
+        public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p, out double minDistance)
+        {
             Point closest = null;
-            double minDistance = double.MaxValue;
+            minDistance = double.MaxValue;
 
             foreach (var geometry in geometries)
             {
@@ -65,12 +73,7 @@ namespace Iridium.Geo
             return closest;
         }
 
-        public static double Angle(Point p1, Point p2)
-        {
-            return Math.Atan2(p2.Y - p1.Y, p2.X - p1.X);
-        }
-
-        public static double Length(this IEnumerable<LineSegment> segments)
+        public static double Length(this IEnumerable<ILinearGeometry> segments)
         {
             return segments.Sum(s => s.Length);
         }
@@ -97,16 +100,29 @@ namespace Iridium.Geo
             return len;
         }
 
-        public static bool IsWithinTolerance(double a, double b)
-        {
-            return (Math.Abs(a - b) < 0.01);
-        }
-
-		public static Rectangle BoundingBox(this IEnumerable<IGeometry> geometries)
+        public static Rectangle BoundingBox(this IEnumerable<Point> points)
         {
             double x1 = double.MaxValue, y1 = double.MaxValue, x2 = double.MinValue, y2 = double.MinValue;
 
-			foreach (var geometry in geometries)
+            foreach (var pt in points)
+            {
+                x1 = Math.Min(x1, pt.X);
+                y1 = Math.Min(y1, pt.Y);
+                x2 = Math.Max(x2, pt.X);
+                y2 = Math.Max(y2, pt.Y);
+            }
+
+            if (x1 == double.MaxValue)
+                return null;
+
+            return new Rectangle(new Point(x1, y1), new Point(x2, y2));
+        }
+
+        public static Rectangle BoundingBox(this IEnumerable<IGeometry> geometries)
+        {
+            double x1 = double.MaxValue, y1 = double.MaxValue, x2 = double.MinValue, y2 = double.MinValue;
+
+            foreach (var geometry in geometries)
             {
                 var box = geometry.BoundingBox();
 
@@ -116,10 +132,28 @@ namespace Iridium.Geo
                 y2 = Math.Max(y2, box.MaxY);
             }
 
-		    if (x1 == double.MaxValue)
-		        return null;
+            if (x1 == double.MaxValue)
+                return null;
 
             return new Rectangle(new Point(x1, y1), new Point(x2, y2));
+        }
+
+        public static bool Intersects<T1,T2>(this T1 thisGeometry, T2 geometry) where T1:IGeometry where T2:IGeometry
+        {
+            if (!thisGeometry.BoundingBox().Intersects(geometry.BoundingBox()))
+                return false;
+
+            var intersectable1 = thisGeometry as IIntersectable<T2>;
+
+            if (intersectable1 != null)
+                return intersectable1.Intersects(geometry);
+
+            var intersectable2 = geometry as IIntersectable<T1>;
+
+            if (intersectable2 != null)
+                return intersectable2.Intersects(thisGeometry);
+
+            throw new NotImplementedException();
         }
     }
 }

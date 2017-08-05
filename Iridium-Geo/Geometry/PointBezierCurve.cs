@@ -47,13 +47,6 @@ namespace Iridium.Geo
             return false;
         }
 
-        public override Point ClosestPoint(Point p, out double distance)
-        {
-            distance = p.DistanceTo(P1);
-
-            return P1;
-        }
-
         public override Rectangle BoundingBox()
         {
             return new Rectangle(P1,P1);

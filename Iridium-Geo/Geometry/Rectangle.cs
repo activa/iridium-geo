@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace Iridium.Geo
 {
-    public class Rectangle : IGeometry, ITranslatable<Rectangle>, IScalable<Rectangle>
+    public class Rectangle : IGeometry, ITranslatable<Rectangle>, IScalable<Rectangle>, ITransformable<Polygon>, IClosedGeometry
     {
         public Point P1 { get; }
         public Point P2 { get; }
@@ -32,50 +34,44 @@ namespace Iridium.Geo
             return !(r.MinX > MaxX || r.MaxX < MinX || r.MinY > MaxY || r.MaxY < MinY);
         }
 
+        public static implicit operator Polygon(Rectangle rectangle)
+        {
+            return new Polygon(rectangle.CornerPoints());
+        }
+
+        public IEnumerable<Point> CornerPoints()
+        {
+            yield return P1;
+            yield return new Point(MaxX,MinY);
+            yield return P2;
+            yield return new Point(MinX,MaxY);
+        }
+
         public Rectangle BoundingBox()
         {
             return this;
         }
 
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx,dy);
-        }
+        public Point ClosestPoint(Point p) => new Polygon(CornerPoints()).ClosestPoint(p);
 
-        public IGeometry Rotate(double angle, Point origin = null)
-        {
-            throw new NotSupportedException();
-        }
+        public Point Center => new Point(P1.X + Width/2, P1.Y + Height/2);
 
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
+        public Rectangle Translate(double dx, double dy) => new Rectangle(P1.Translate(dx,dy), P2.Translate(dx,dy));
+        public Rectangle Scale(double factor, Point origin) => new Rectangle(P1.Scale(factor,origin), P2.Scale(factor,origin));
+        public Polygon Rotate(double angle, Point origin = null) => new Polygon(CornerPoints().Rotate(angle,origin));
+        public Polygon Transform(AffineMatrix2D matrix) => new Polygon(CornerPoints().Transform(matrix));
 
-        public IGeometry Transform(AffineMatrix2D matrix)
-        {
-            throw new NotSupportedException();
-        }
+        public double Area => Width * Height;
 
-        public Point ClosestPoint(Point p)
-        {
-            return new Polygon(new[] {P1,new Point(P2.X,P1.Y),P2, new Point(P1.X,P2.Y)}).ClosestPoint(p);
-        }
+        public bool IsPointInside(Point p) => p.X >= P1.X && p.X <= P2.X && p.Y >= P1.Y && p.Y <= P2.Y;
 
-        public Point Center()
-        {
-            return new Point(P1.X + Width/2, P1.Y + Height/2);
-        }
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
 
-        public Rectangle Translate(double dx, double dy)
-        {
-            return new Rectangle(P1.Translate(dx,dy), P2.Translate(dx,dy));
-        }
-
-        public Rectangle Scale(double factor, Point origin)
-        {
-            return new Rectangle(P1.Scale(factor,origin), P2.Scale(factor,origin));
-        }
+        Polygon IScalable<Polygon>.Scale(double factor, Point origin) => new Polygon(CornerPoints()).Scale(factor,origin);
+        Polygon ITranslatable<Polygon>.Translate(double dx, double dy) => new Polygon(CornerPoints().Translate(dx,dy));
     }
 
 }

@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class MultiPoint : IMultiGeometry, ITransformable<MultiPoint>, IEnumerable<Point>
+    public class MultiPoint : IMultiGeometry<Point>, IIntersectable<Point>, IIntersectable<MultiPoint>
     {
         public IReadOnlyList<Point> Points { get; }
 
@@ -63,7 +63,7 @@ namespace Iridium.Geo
             return new MultiPoint(Points.Transform(matrix));
         }
 
-        IEnumerator<IGeometry> IEnumerable<IGeometry>.GetEnumerator()
+        IEnumerator<Point> IEnumerable<Point>.GetEnumerator()
         {
             return GetEnumerator();
         }
@@ -76,6 +76,16 @@ namespace Iridium.Geo
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        public bool Intersects(Point other)
+        {
+            return Points.Any(pt => pt.X == other.X && pt.Y == other.Y);
+        }
+
+        public bool Intersects(MultiPoint other)
+        {
+            return Points.Any(pt1 => other.Any(pt2 => pt2.X == pt1.X && pt2.Y == pt1.Y));
         }
     }
 }

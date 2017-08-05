@@ -1,8 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Iridium.Geo;
 using NUnit.Framework;
 
@@ -44,9 +41,9 @@ namespace Iridium_Geo_Test
         {
             var geo = WKTParser.Parse("LINESTRING(5 6 , 19 20)");
 
-            Assert.That(geo, Is.TypeOf<Polygon>());
+            Assert.That(geo, Is.TypeOf<Polyline>());
 
-            var polygon = (Polygon)geo;
+            var polygon = (Polyline)geo;
 
             Assert.That(polygon.Points.Count, Is.EqualTo(2));
 
@@ -61,21 +58,21 @@ namespace Iridium_Geo_Test
         {
             var geo = WKTParser.Parse("MULTILINESTRING((5 6 , 19 20),(1 2, 9 10))");
 
-            Assert.That(geo, Is.TypeOf<MultiPolygon>());
+            Assert.That(geo, Is.TypeOf<MultiPolyline>());
 
-            var multiPolygon = (MultiPolygon)geo;
+            var multiPolygon = (MultiPolyline)geo;
 
-            Assert.That(multiPolygon.Polygons.Count, Is.EqualTo(2));
+            Assert.That(multiPolygon.Polylines.Count, Is.EqualTo(2));
 
-            Assert.That(multiPolygon.Polygons[0].Points[0].X, Is.EqualTo(5).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[0].Points[0].Y, Is.EqualTo(6).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[0].Points[1].X, Is.EqualTo(19).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[0].Points[1].Y, Is.EqualTo(20).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[0].Points[0].X, Is.EqualTo(5).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[0].Points[0].Y, Is.EqualTo(6).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[0].Points[1].X, Is.EqualTo(19).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[0].Points[1].Y, Is.EqualTo(20).Within(1).Ulps);
 
-            Assert.That(multiPolygon.Polygons[1].Points[0].X, Is.EqualTo(1).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[1].Points[0].Y, Is.EqualTo(2).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[1].Points[1].X, Is.EqualTo(9).Within(1).Ulps);
-            Assert.That(multiPolygon.Polygons[1].Points[1].Y, Is.EqualTo(10).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[1].Points[0].X, Is.EqualTo(1).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[1].Points[0].Y, Is.EqualTo(2).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[1].Points[1].X, Is.EqualTo(9).Within(1).Ulps);
+            Assert.That(multiPolygon.Polylines[1].Points[1].Y, Is.EqualTo(10).Within(1).Ulps);
         }
 
         [Test]
@@ -135,15 +132,15 @@ namespace Iridium_Geo_Test
         {
             yield return new TestCaseData(new Point(1,2),"POINT (1 2)");
             yield return new TestCaseData(new MultiPoint(new[] { new Point(1,2), new Point(9,10),  }), "MULTIPOINT (1 2,9 10)");
-            yield return new TestCaseData(new Polygon(new[] { new Point(1, 2), new Point(9, 10), }), "LINESTRING (1 2,9 10)");
-            yield return new TestCaseData(new MultiPolygon(new [] {new Polygon(new [] { new Point(5,6), new Point(19,20) }), new Polygon(new[] { new Point(1, 2), new Point(9, 10) }) }), "MULTILINESTRING ((5 6,19 20),(1 2,9 10))");
+            yield return new TestCaseData(new Polyline(new[] { new Point(1, 2), new Point(9, 10), }), "LINESTRING (1 2,9 10)");
+            yield return new TestCaseData(new MultiPolyline(new [] {new Polyline(new [] { new Point(5,6), new Point(19,20) }), new Polyline(new[] { new Point(1, 2), new Point(9, 10) }) }), "MULTILINESTRING ((5 6,19 20),(1 2,9 10))");
 
         }
 
         [Test]
         public void TestSimplify()
         {
-            Polygon polygon = new Polygon(new[] { new Point(20,10), new Point(20, 10), new Point(20, 10), new Point(20, 10), new Point(20, 10), });
+            Poly polygon = new Polyline(new[] { new Point(20,10), new Point(20, 10), new Point(20, 10), new Point(20, 10), new Point(20, 10), });
 
             var simplified = polygon.Simplify(0.1);
 
@@ -157,7 +154,7 @@ namespace Iridium_Geo_Test
         [Test]
         public void TestSimplify2()
         {
-            Polygon polygon = new Polygon(new[] { new Point(20, 10), new Point(21, 15), new Point(22, 16), new Point(23, 10), new Point(24, 24), });
+            Poly polygon = new Polyline(new[] { new Point(20, 10), new Point(21, 15), new Point(22, 16), new Point(23, 10), new Point(24, 24), });
 
             var simplified = polygon.Simplify(0.000000001);
 
@@ -170,7 +167,59 @@ namespace Iridium_Geo_Test
             }
         }
 
+        [Test]
+        public void PolygonArea()
+        {
+            Rectangle rect = new Rectangle(new Point(5,5), new Point(20,10) );
+            Polygon p = rect;
+
+            Assert.That(rect.Area, Is.EqualTo(75));
+            Assert.That(p.Area, Is.EqualTo(75));
+        }
+
+
+        private double[] _randomAngles;
+
+        [OneTimeSetUp]
+        public void Setup()
+        {
+            Random rnd = new Random();
+
+            _randomAngles = new double[1000];
+
+            for (int i = 0; i < 1000; i++)
+                _randomAngles[i] = rnd.NextDouble();
+        }
+
+        [Test]
+        public void NormalizeAngle()
+        {
+            for (int i = 0; i < _randomAngles.Length; i++)
+                Assert.That(GeometryUtil.NormalizeAngle(_randomAngles[i]), Is.AtMost(Math.PI).And.AtLeast(-Math.PI));
+        }
+
+        [Test]
+        public void TotalDistanceBetweenPoints()
+        {
+            var points = new Point[]
+            {
+                new Point(10,5), new Point(20,5), new Point(20,10), new Point(10,10), 
+            };
+
+            Assert.That(points.Length(true), Is.EqualTo(30));
+            Assert.That(points.Length(false), Is.EqualTo(25));
+        }
+
+        [Test]
+        public void SomeTest()
+        {
+            Point p = new Point(7, 6);
+            Point aroundPoint = new Point(6,4);
+            LineSegment seg = new LineSegment(new Point(3,6), new Point(8,2));
+
+            AffineMatrix2D matrix = AffineMatrix2D.Factory.Mirror(seg);
+
+            Point p2 = p.Transform(matrix);
+        }
     }
-
-
 }

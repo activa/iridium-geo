@@ -2,7 +2,7 @@ using System;
 
 namespace Iridium.Geo
 {
-	public class LineSegment : IGeometry, ITransformable<LineSegment>
+	public class LineSegment : ILinearGeometry, ITransformable<LineSegment>, IIntersectable<LineSegment>
     {
         private double? _angle;
         private double? _length;
@@ -25,10 +25,12 @@ namespace Iridium.Geo
             P2 = new Point(p1,angle,length);
         }
 
-
         public double Angle => (double) (_angle ?? (_angle = Math.Atan2(P2.Y-P1.Y,P2.X-P1.X)));
         public double Length => (double) (_length ?? (_length = P1.DistanceTo(P2)));
-
+        double ILinearGeometry.StartAngle => Angle;
+        double ILinearGeometry.EndAngle => Angle;
+        public Point StartPoint => P1;
+        public Point EndPoint => P2;
         public Point Center => new Point(P1.X + (P2.X-P1.X)/2, P1.Y + (P2.Y-P1.Y)/2);
 
         public Rectangle BoundingBox()
@@ -36,27 +38,8 @@ namespace Iridium.Geo
             return new Rectangle(new Point(Math.Min(P1.X,P2.X), Math.Min(P1.Y,P2.Y)), new Point(Math.Max(P1.X,P2.X),Math.Max(P1.Y,P2.Y)));
         }
 
-	    IGeometry IGeometry.Translate(double dx, double dy)
-	    {
-	        return Translate(dx, dy);
-	    }
 
-	    IGeometry IGeometry.Rotate(double angle, Point origin)
-	    {
-	        return Rotate(angle, origin);
-	    }
-
-	    IGeometry IGeometry.Scale(double factor, Point origin)
-	    {
-	        return Scale(factor, origin);
-	    }
-
-	    IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-	    {
-	        return Transform(matrix);
-	    }
-
-	    public Point Intersection(LineSegment line2)
+        public Point Intersection(LineSegment line2)
         {
             double p1X = P1.X;
             double p1Y = P1.Y;
@@ -125,29 +108,21 @@ namespace Iridium.Geo
             return new Point(P1.X + vec2.X * t, P1.Y + vec2.Y * t);
         }
 
-        public double DistanceTo(Point point)
-	    {
-	        return ClosestPoint(point).DistanceTo(point);
-	    }
+	    public double DistanceTo(Point point) => ClosestPoint(point).DistanceTo(point);
 
-		public LineSegment Translate(double dx, double dy)
-		{
-			return new LineSegment(P1.Translate(dx, dy), P2.Translate(dx, dy));
-		}
+        public LineSegment Translate(double dx, double dy) => new LineSegment(P1.Translate(dx, dy), P2.Translate(dx, dy));
+        public LineSegment Rotate(double angle, Point origin = null) => new LineSegment(P1.Rotate(angle, origin), P2.Rotate(angle, origin));
+        public LineSegment Scale(double factor, Point origin = null) => new LineSegment(P1.Scale(factor, origin), P2.Scale(factor, origin));
+        public LineSegment Transform(AffineMatrix2D matrix) => new LineSegment(P1.Transform(matrix), P2.Transform(matrix));
 
-		public LineSegment Rotate(double angle, Point origin = null)
-		{
-			return new LineSegment(P1.Rotate(angle, origin), P2.Rotate(angle, origin));
-		}
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
 
-		public LineSegment Scale(double factor, Point origin = null)
-		{
-			return new LineSegment(P1.Scale(factor, origin), P2.Scale(factor, origin));
-		}
-
-	    public LineSegment Transform(AffineMatrix2D matrix)
-	    {
-	        return new LineSegment(P1.Transform(matrix), P2.Transform(matrix));
-	    }
-	}
+        ILinearGeometry IScalable<ILinearGeometry>.Scale(double factor, Point origin) => Scale(factor, origin);
+        ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy) => Translate(dx, dy);
+        ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix) => Transform(matrix);
+    }
 }

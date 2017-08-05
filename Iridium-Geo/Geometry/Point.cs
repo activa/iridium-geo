@@ -126,9 +126,8 @@ namespace Iridium.Geo
 #if DEBUG
         public override string ToString()
         {
-            return $"[Point: X={X}, Y={Y}]";
+            return $"({X},{Y})";
         }
-
 #endif
 
 

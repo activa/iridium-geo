@@ -2,32 +2,31 @@ using System;
 
 namespace Iridium.Geo
 {
-    public class CubicBezierCurve : BezierCurve//<CubicBezierCurve>
+    public class CubicBezierCurve : BezierCurve
     {
-        public Point CP1 { get; }
-        public Point CP2 { get; }
+        private Point CP1 => ControlPoints[0];
+        private Point CP2 => ControlPoints[1];
 
-        public CubicBezierCurve(CubicBezierCurve c) : base(c.P1,c.P2)
+        public CubicBezierCurve(CubicBezierCurve c) : base(c.P1,c.P2, c.CP1, c.CP2)
         {
-            CP1 = c.CP1;
-            CP2 = c.CP2;
         }
 
-        public CubicBezierCurve(Point p1, Point controlPoint1, Point controlPoint2, Point p2) : base(p1,p2)
+        public CubicBezierCurve(Point p1, Point controlPoint1, Point controlPoint2, Point p2) : base(p1,p2,controlPoint1,controlPoint2)
         {
-            CP1 = controlPoint1;
-            CP2 = controlPoint2;
         }
 
         public override Point PointOnCurve(double t)
         {
-            double t1 = 1 - t;
+            double mt = 1 - t;
+            double t2 = t * t;
+            double t3 = t2 * t;
+            double mt2 = mt * mt;
+            double mt3 = mt2 * mt;
 
             return new Point(
-                t1*t1*t1*P1.X + 3*t1*t1*t*CP1.X + 3*t1*t*t*CP2.X + t*t*t*P2.X,
-                t1*t1*t1*P1.Y + 3*t1*t1*t*CP1.Y + 3*t1*t*t*CP2.Y + t*t*t*P2.Y
+                mt3*P1.X + 3*mt2*t*CP1.X + 3*mt*t2*CP2.X + t3*P2.X,
+                mt3*P1.Y + 3*mt2*t*CP1.Y + 3*mt*t2*CP2.Y + t3*P2.Y
             );
-            
         }
 
         public override int Order => 3;
@@ -58,9 +57,6 @@ namespace Iridium.Geo
 
         public static CubicBezierCurve CreateSmallArc(Circle circle, double a1, double a2)
         {
-            // Compute all four points for an arc that subtends the same total angle
-            // but is centered on the X-axis
-
             a1 = GeometryUtil.NormalizeAngle(a1);
             a2 = GeometryUtil.NormalizeAngle(a2);
 
@@ -79,9 +75,6 @@ namespace Iridium.Geo
             var y2 = y1 + f * x4;
             var x3 = x2; 
             var y3 = -y2;
-
-            // Find the arc points actual locations by computing x1,y1 and x4,y4 
-            // and rotating the control points by a + a1
 
             var ar = a + a1;
             var cos_ar = Math.Cos(ar);

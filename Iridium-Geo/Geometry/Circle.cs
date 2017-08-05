@@ -2,7 +2,7 @@ using System;
 
 namespace Iridium.Geo
 {
-    public class Circle : IGeometry, ITranslatable<Circle>, IRotatable<Circle>, IScalable<Circle>, ITransformable<Ellipse>
+    public class Circle : IGeometry, ITranslatable<Circle>, IRotatable<Circle>, IScalable<Circle>, ITransformable<Ellipse>, IIntersectable<Circle>, IIntersectable<Point>
     {
         public Point Center { get; }
         public double Radius { get; }
@@ -88,6 +88,26 @@ namespace Iridium.Geo
         Ellipse ITranslatable<Ellipse>.Translate(double dx, double dy)
         {
             return new Ellipse(Translate(dx,dy));
+        }
+
+        public bool Intersects(Circle other)
+        {
+            return Center.DistanceTo(other.Center) <= (Radius + other.Radius);
+        }
+
+        public double DistanceTo(Circle other)
+        {
+            return Math.Max(Center.DistanceTo(other.Center) - Radius - other.Radius, 0);
+        }
+
+        public bool Intersects(Point pt)
+        {
+            return Center.DistanceTo(pt) <= Radius;
+        }
+
+        public double DistanceTo(Point other)
+        {
+            return Math.Max(Center.DistanceTo(other) - Radius, 0);
         }
     }
 }

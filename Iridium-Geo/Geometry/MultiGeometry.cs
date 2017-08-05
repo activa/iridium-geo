@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class MultiGeometry : IMultiGeometry, ITransformable<MultiGeometry>
+    public class MultiGeometry : IMultiGeometry<IGeometry>, ITransformable<MultiGeometry>
     {
         public IReadOnlyList<IGeometry> Geometries { get; }
 

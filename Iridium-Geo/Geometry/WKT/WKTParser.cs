@@ -103,25 +103,25 @@ namespace Iridium.Geo
             }
         }
 
-        private Polygon ParseLineString()
+        private Poly ParseLineString()
         {
             NextToken(WKTTokenType.LineString);
             NextToken(WKTTokenType.Open);
 
-            var polygon = new Polygon(ParsePoints());
+            var polygon = new Polyline(ParsePoints());
 
             NextToken(WKTTokenType.Close);
 
             return polygon;
         }
 
-        private MultiPolygon ParseMultiLineString()
+        private MultiPolyline ParseMultiLineString()
         {
             NextToken(WKTTokenType.MultilineString);
 
             NextToken(WKTTokenType.Open);
 
-            List<Polygon> polygons = new List<Polygon>();
+            List<Polyline> polylines = new List<Polyline>();
 
             for (;;)
             {
@@ -130,7 +130,7 @@ namespace Iridium.Geo
 
                 NextToken(WKTTokenType.Open);
 
-                polygons.Add(new Polygon(ParsePoints()));
+                polylines.Add(new Polyline(ParsePoints()));
 
                 NextToken(WKTTokenType.Close);
 
@@ -140,7 +140,7 @@ namespace Iridium.Geo
 
             NextToken();
 
-            return new MultiPolygon(polygons);
+            return new MultiPolyline(polylines);
         }
 
         private MultiPoint ParseMultiPoint()

@@ -1,32 +1,33 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class Spline : IGeometry, ITransformable<Spline>
+    public class Spline : ITransformable<Spline>, IMultiGeometry<ILinearGeometry>
     {
-        public IReadOnlyList<BezierCurve> Curves { get; }
+        public IReadOnlyList<ILinearGeometry> Curves { get; }
         public bool Closed { get; }
 
         private Rectangle _boundingBox;
 
-        public Spline(IEnumerable<BezierCurve> curves, bool closed)
+        public Spline(IEnumerable<ILinearGeometry> curves, bool closed)
         {
             Curves = curves.ToArray();
             Closed = closed;
         }
 
-        public Point ClosestPoint(Point p)
+        public Point ClosestPoint(Point p, out double minDistance)
         {
             Point closest = null;
-            double minDistance = double.MaxValue;
+            minDistance = double.MaxValue;
 
             foreach (var curve in Curves)
             {
-                double distance;
-
-                Point cp = curve.ClosestPoint(p, out distance);
+                Point cp = curve.ClosestPoint(p);
+                
+                var distance = p.DistanceTo(cp);
 
                 if (distance < minDistance)
                 {
@@ -36,8 +37,6 @@ namespace Iridium.Geo
             }
 
             return closest;
-
-
         }
 
         public Spline Scale(double factor, Point origin = null)
@@ -100,6 +99,23 @@ namespace Iridium.Geo
         IGeometry IGeometry.Transform(AffineMatrix2D matrix)
         {
             return Transform(matrix);
+        }
+
+        public Point ClosestPoint(Point p)
+        {
+            double distance;
+
+            return ClosestPoint(p, out distance);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+
+        public IEnumerator<ILinearGeometry> GetEnumerator()
+        {
+            return Curves.GetEnumerator();
         }
     }
 

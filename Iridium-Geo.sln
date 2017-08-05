@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iridium-Geo", "Iridium-Geo\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iridium-Geo-Test", "Iridium-Geo-Test\Iridium-Geo-Test.csproj", "{629121B7-9533-4FD8-A68E-BACAFC50B0E6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iridium-Geo-Playground", "Iridium-Geo-Playground\Iridium-Geo-Playground.csproj", "{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{629121B7-9533-4FD8-A68E-BACAFC50B0E6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{629121B7-9533-4FD8-A68E-BACAFC50B0E6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{629121B7-9533-4FD8-A68E-BACAFC50B0E6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
