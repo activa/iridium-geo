@@ -199,6 +199,25 @@ namespace Iridium_Geo_Test
         }
 
         [Test]
+        [TestCaseSource(nameof(AnglesToNormalize))]
+        public void NormalizeAngle2(double angle1, double angle2)
+        {
+            Assert.That(GeometryUtil.NormalizeAngle(angle1), Is.EqualTo(angle2).Within(0.00001));
+        }
+
+        public static IEnumerable<TestCaseData> AnglesToNormalize
+        {
+            get
+            {
+                yield return new TestCaseData(0.0,0.0);
+                yield return new TestCaseData(1.0,1.0);
+                yield return new TestCaseData(-1.0,-1.0);
+                yield return new TestCaseData(Math.PI/2+1.0, Math.PI/2+1.0);
+                yield return new TestCaseData(Math.PI + 1.0, -Math.PI+1.0);
+            }
+        }
+
+        [Test]
         public void TotalDistanceBetweenPoints()
         {
             var points = new Point[]

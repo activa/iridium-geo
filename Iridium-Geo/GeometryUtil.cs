@@ -23,7 +23,7 @@ namespace Iridium.Geo
         {
             angle = ((angle % PI2) + PI2) % PI2;
 
-            return angle > Math.PI ? angle - Math.PI : angle;
+            return angle > Math.PI ? (angle - PI2) : angle;
         }
 
         public static IEnumerable<T> Translate<T>(this IEnumerable<ITranslatable<T>> geometries, double dx, double dy)
