@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class BezierCurve : ICurve, ITransformable<BezierCurve>
+    public class BezierCurve : ICurve, ITransformable<BezierCurve>, IIntersectable<LineSegment>, IIntersectable<BezierCurve>
     {
         private static double[][] _factorals = new[]
         {
@@ -29,6 +29,15 @@ namespace Iridium.Geo
                 throw new NotSupportedException("BezierCurve only support orders 0 to " + (_factorals.Length-1));
         }
 
+        public BezierCurve(IEnumerable<Point> points) : this(points.ToArray())
+        {
+        }
+
+        public BezierCurve(LineSegment lineSegment) : this(lineSegment.StartPoint, lineSegment.EndPoint)
+        {
+        }
+
+
         public Point PointOnCurve(double t)
         {
             double mt = 1 - t;
@@ -43,8 +52,8 @@ namespace Iridium.Geo
                 case 1:
                     {
                         return new Point(
-                            mt * Points[0].X + t * Points[2].X,
-                            mt * Points[0].Y + t * Points[2].Y
+                            mt * Points[0].X + t * Points[1].X,
+                            mt * Points[0].Y + t * Points[1].Y
                         );
                     }
 
@@ -95,8 +104,8 @@ namespace Iridium.Geo
         public double StartAngle => StartPoint.AngleTo(Points[1]);
         public double EndAngle => Points[Points.Count - 2].AngleTo(EndPoint);
 
-
-        public bool Intersects(LineSegment line) => Partition().Any(segment => segment.Intersects(line));
+        public bool Intersects(LineSegment line) => Intersects(new BezierCurve(line));
+        public IEnumerable<Point> Intersections(LineSegment line) => Intersections(new BezierCurve(line));
 
         public Point ClosestPoint(Point p)
         {
@@ -166,14 +175,14 @@ namespace Iridium.Geo
         public Point StartPoint => Points[0];
         public Point EndPoint => Points[Points.Count-1];
 
-        public static BezierCurve CreateSmallArc(Circle circle, double a1, double a2)
+        public static BezierCurve FromArc(Circle circle, double startAngle, double endAngle)
         {
-            a1 = GeometryUtil.NormalizeAngle(a1);
-            a2 = GeometryUtil.NormalizeAngle(a2);
+            startAngle = GeometryUtil.NormalizeAngle(startAngle);
+            endAngle = GeometryUtil.NormalizeAngle(endAngle);
 
             var r = circle.Radius;
 
-            var a = (a2 - a1) / 2.0; // 
+            var a = (endAngle - startAngle) / 2.0; // 
             var x4 = r * Math.Cos(a);
             var y4 = r * Math.Sin(a);
             var x1 = x4;
@@ -187,17 +196,106 @@ namespace Iridium.Geo
             var x3 = x2;
             var y3 = -y2;
 
-            var ar = a + a1;
+            var ar = a + startAngle;
             var cos_ar = Math.Cos(ar);
             var sin_ar = Math.Sin(ar);
 
             return new BezierCurve(
-                new Point(r * Math.Cos(a1), r * Math.Sin(a1)),
+                new Point(r * Math.Cos(startAngle), r * Math.Sin(startAngle)),
                 new Point(x2 * cos_ar - y2 * sin_ar, x2 * sin_ar + y2 * cos_ar),
                 new Point(x3 * cos_ar - y3 * sin_ar, x3 * sin_ar + y3 * cos_ar),
-                new Point(r * Math.Cos(a2), r * Math.Sin(a2))
+                new Point(r * Math.Cos(endAngle), r * Math.Sin(endAngle))
             ).Translate(circle.Center.X, circle.Center.Y);
         }
 
+        public bool Intersects(BezierCurve other)
+        {
+            var bbox1 = BoundingBox();
+            var bbox2 = other.BoundingBox();
+
+            if (!bbox1.Intersects(bbox2))
+                return false;
+
+            if (bbox1.Area + bbox2.Area < 0.01)
+                return true;
+
+            (var c1a, var c1b) = Split(0.5);
+            (var c2a, var c2b) = other.Split(0.5);
+
+            return c1a.Intersects(c2a) || c1a.Intersects(c2b) || c1b.Intersects(c2a) || c1b.Intersects(c2b);
+        }
+
+        public IEnumerable<Point> Intersections(BezierCurve other)
+        {
+            List<Point> points = new List<Point>();
+
+            void checkIntersections(BezierCurve c1, BezierCurve c2)
+            {
+                var bbox1 = c1.BoundingBox();
+                var bbox2 = c2.BoundingBox();
+
+                if (!bbox1.Intersects(bbox2))
+                    return;
+
+                if (bbox1.Area + bbox2.Area < 0.1)
+                {
+                    var pt = new LineSegment(c1.StartPoint, c1.EndPoint).Intersection(new LineSegment(c2.StartPoint, c2.EndPoint));
+
+                    if (pt != null)
+                        points.Add(pt);
+
+                    return;
+                }
+
+                (var c1a, var c1b) = c1.Split(0.5);
+                (var c2a, var c2b) = c2.Split(0.5);
+
+                checkIntersections(c1a,c2a);
+                checkIntersections(c1a,c2b);
+                checkIntersections(c1b,c2a);
+                checkIntersections(c1b,c2b);
+            }
+
+            checkIntersections(this,other);
+
+            return points;
+        }
+
+        public (BezierCurve,BezierCurve) Split(double at)
+        {
+            List<Point> left = new List<Point>();
+            List<Point> right = new List<Point>();
+
+            void splitCurve(Point[] points, double t)
+            {
+                if (points.Length == 1)
+                {
+                    left.Add(points[0]);
+                    right.Insert(0,points[0]);
+                    return;
+                }
+
+                Point[] newPoints = new Point[points.Length-1];
+
+                for (int i = 0; i < newPoints.Length; i++)
+                {
+                    if (i == 0)
+                        left.Add(points[i]);
+                    if (i == newPoints.Length - 1)
+                        right.Insert(0,points[i+1]);
+
+                    newPoints[i] = new Point((1 - t) * points[i].X + t * points[i + 1].X, (1 - t) * points[i].Y + t * points[i + 1].Y);
+                }
+
+                splitCurve(newPoints, t);
+            }
+
+            splitCurve(Points.ToArray(), at);
+
+            return (
+                new BezierCurve(left), 
+                new BezierCurve(right)
+            );
+        }
     }
 }

@@ -9,7 +9,7 @@ namespace Iridium.Geo
         public double ToAngle { get; }
         public bool Increasing { get; }
 
-        public Arc(Circle circle, double startAngle, double endAngle, bool clockWise)
+        public Arc(Circle circle, double startAngle, double endAngle, bool clockWise = true)
         {
             Circle = circle;
             FromAngle = startAngle;
