@@ -6,8 +6,7 @@ namespace Iridium.Geo
 {
     public class BezierCurve : ICurve, ITransformable<BezierCurve>, IIntersectable<LineSegment>, IIntersectable<BezierCurve>
     {
-        private static double[][] _factorals = new[]
-        {
+        private static double[][] _factorals = {
             new double[] {1},
             new double[] {1,1},
             new double[] {1,2,1},
@@ -208,10 +207,10 @@ namespace Iridium.Geo
             ).Translate(circle.Center.X, circle.Center.Y);
         }
 
-        public bool Intersects(BezierCurve other)
+        public  bool Intersects(BezierCurve c2)
         {
-            var bbox1 = BoundingBox();
-            var bbox2 = other.BoundingBox();
+            var bbox1 = this.BoundingBox();
+            var bbox2 = c2.BoundingBox();
 
             if (!bbox1.Intersects(bbox2))
                 return false;
@@ -219,8 +218,8 @@ namespace Iridium.Geo
             if (bbox1.Area + bbox2.Area < 0.01)
                 return true;
 
-            (var c1a, var c1b) = Split(0.5);
-            (var c2a, var c2b) = other.Split(0.5);
+            (var c1a, var c1b) = this.Split(0.5);
+            (var c2a, var c2b) = c2.Split(0.5);
 
             return c1a.Intersects(c2a) || c1a.Intersects(c2b) || c1b.Intersects(c2a) || c1b.Intersects(c2b);
         }
@@ -296,6 +295,28 @@ namespace Iridium.Geo
                 new BezierCurve(left), 
                 new BezierCurve(right)
             );
+        }
+
+        public bool Intersects(ILinearGeometry other)
+        {
+            switch (other)
+            {
+                case BezierCurve c: return Intersects(c);
+                case LineSegment seg: return Intersects(seg);
+
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<Point> Intersections(ILinearGeometry other)
+        {
+            switch (other)
+            {
+                case BezierCurve c: return Intersections(c);
+                case LineSegment seg: return Intersections(seg);
+
+                default: throw new NotImplementedException();
+            }
         }
     }
 }

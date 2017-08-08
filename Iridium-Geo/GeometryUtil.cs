@@ -138,22 +138,29 @@ namespace Iridium.Geo
             return new Rectangle(new Point(x1, y1), new Point(x2, y2));
         }
 
-        public static bool Intersects<T1,T2>(this T1 thisGeometry, T2 geometry) where T1:IGeometry where T2:IGeometry
+        public static bool Intersects<T1,T2>(this T1 geom1, T2 geom2) where T1:IGeometry where T2:IGeometry
         {
-            if (!thisGeometry.BoundingBox().Intersects(geometry.BoundingBox()))
-                return false;
+            if (geom1 is IIntersectable<T2> i1)
+                return i1.Intersects(geom2);
 
-            var intersectable1 = thisGeometry as IIntersectable<T2>;
-
-            if (intersectable1 != null)
-                return intersectable1.Intersects(geometry);
-
-            var intersectable2 = geometry as IIntersectable<T1>;
-
-            if (intersectable2 != null)
-                return intersectable2.Intersects(thisGeometry);
+            if (geom2 is IIntersectable<T1> i2)
+                return i2.Intersects(geom1);
 
             throw new NotImplementedException();
         }
+
+        public static bool Overlaps<T1, T2>(this T1 geom1, T2 geom2) where T1 : IGeometry where T2 : IGeometry
+        {
+            if (geom1 is IOverlappable<T2> i1)
+                return i1.Overlaps(geom2);
+
+            if (geom2 is IOverlappable<T1> i2)
+                return i2.Overlaps(geom1);
+
+            throw new NotImplementedException();
+        }
+
+
     }
+
 }

@@ -83,9 +83,19 @@ namespace Iridium.Geo
             return Points.Any(pt => pt.X == other.X && pt.Y == other.Y);
         }
 
+        public IEnumerable<Point> Intersections(Point other)
+        {
+            return Points.Where(pt => pt.X == other.X && pt.Y == other.Y);
+        }
+
         public bool Intersects(MultiPoint other)
         {
             return Points.Any(pt1 => other.Any(pt2 => pt2.X == pt1.X && pt2.Y == pt1.Y));
+        }
+
+        public IEnumerable<Point> Intersections(MultiPoint other)
+        {
+            return Points.SelectMany(pt1 => other.Where(pt2 => pt2.X == pt1.X && pt2.Y == pt1.Y));
         }
     }
 }

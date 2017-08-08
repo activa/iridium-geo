@@ -19,9 +19,15 @@ namespace Iridium.Geo
     public interface IIntersectable<in T> where T : IGeometry
     {
         bool Intersects(T other);
+        IEnumerable<Point> Intersections(T other);
     }
 
-    public interface ILinearGeometry : IGeometry, ITransformable<ILinearGeometry>
+    public interface IOverlappable<in T> where T : IGeometry
+    {
+        bool Overlaps(T other);
+    }
+
+    public interface ILinearGeometry : IGeometry, ITransformable<ILinearGeometry>, IIntersectable<ILinearGeometry>
     {
         double Length { get; }
 
@@ -39,7 +45,7 @@ namespace Iridium.Geo
         IEnumerable<LineSegment> Partition(int numSegments);
     }
 
-    public interface IClosedGeometry
+    public interface IClosedGeometry : IGeometry, IOverlappable<IGeometry>
     {
         double Area { get; }
         bool IsPointInside(Point p);

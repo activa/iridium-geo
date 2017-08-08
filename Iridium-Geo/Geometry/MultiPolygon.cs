@@ -83,14 +83,29 @@ namespace Iridium.Geo
             return Polylines.Any(p.Intersects);
         }
 
+        public IEnumerable<Point> Intersections(Poly other)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool Intersects(Polyline p)
         {
             return Polylines.Any(p.Intersects);
         }
 
+        public IEnumerable<Point> Intersections(Polyline other)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public bool Intersects(Polygon p)
         {
             return Polylines.Any(p.Intersects);
+        }
+
+        public IEnumerable<Point> Intersections(Polygon other)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

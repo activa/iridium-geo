@@ -35,5 +35,18 @@ namespace Iridium.Geo
                 return Math.Abs(area/2);
             }
         }
+
+        public bool Overlaps(IGeometry geom)
+        {
+            switch (geom)
+            {
+                case Poly p:
+                    return base.Intersects(p);
+                case Point p:
+                    return base.IsPointInside(p);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
     }
 }

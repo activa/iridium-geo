@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 
 namespace Iridium.Geo
 {
-    public abstract class Poly : IGeometry, IIntersectable<Poly>, IIntersectable<LineSegment>, IIntersectable<Point>, ITransformable<Poly>
+    public abstract class Poly : IGeometry, IIntersectable<Poly>, IIntersectable<LineSegment>, ITransformable<Poly>
     {
         public IReadOnlyList<Point> Points { get; }
         public bool Closed { get; }
@@ -83,6 +83,7 @@ namespace Iridium.Geo
             }
         } 
 
+        /*
         public Point Intersection(LineSegment ray)
         {
             double smallestDistance = double.MaxValue;
@@ -106,6 +107,7 @@ namespace Iridium.Geo
 
             return intersectionPoint;
         }
+        */
 
         public Poly Simplify(double tolerance)
         {
@@ -171,14 +173,19 @@ namespace Iridium.Geo
             return Segments.Any(seg => poly.Segments.Any(seg.Intersects)) || (Closed && IsPointInside(poly.Points[0])) || (poly.Closed && poly.IsPointInside(this.Points[0]));
         }
 
+        public IEnumerable<Point> Intersections(Poly other)
+        {
+            return Segments.SelectMany(seg => other.Segments.Select(s => s.Intersection(seg)).Where(point => point != null));
+        }
+
         public bool Intersects(LineSegment segment)
         {
             return Segments.Any(seg => seg.Intersects(segment)) || (Closed && IsPointInside(segment.P1));
         }
 
-        public bool Intersects(Point pt)
+        public IEnumerable<Point> Intersections(LineSegment other)
         {
-            return Segments.Any(seg => seg.Intersects(pt));
+            return Segments.Select(seg => seg.Intersection(other)).Where(pt => pt != null);
         }
 
         public bool IsPointInside(Point point)

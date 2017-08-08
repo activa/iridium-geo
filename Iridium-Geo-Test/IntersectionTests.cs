@@ -35,20 +35,20 @@ namespace Iridium_Geo_Test
             Circle c = new Circle(new Point(0, 0), 10);
             Point pt = new Point(20, 0);
 
-            Assert.That(c.Intersects(pt), Is.False);
-            Assert.That(pt.Intersects(c), Is.False);
+            Assert.That(c.Overlaps(pt), Is.False);
+            Assert.That(pt.Overlaps(c), Is.False);
 
             c = new Circle(new Point(0, 0), 10);
             pt = new Point(10, 0);
 
-            Assert.That(c.Intersects(pt), Is.True);
-            Assert.That(pt.Intersects(c), Is.True);
+            Assert.That(c.Overlaps(pt), Is.True);
+            Assert.That(pt.Overlaps(c), Is.True);
 
             c = new Circle(new Point(0, 0), 10);
             pt = new Point(5, 0);
 
-            Assert.That(c.Intersects(pt), Is.True);
-            Assert.That(pt.Intersects(c), Is.True);
+            Assert.That(c.Overlaps(pt), Is.True);
+            Assert.That(pt.Overlaps(c), Is.True);
         }
 
         [Test]

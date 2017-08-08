@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Iridium.Geo
 {
@@ -56,6 +57,17 @@ namespace Iridium.Geo
 
         public Point StartPoint => new Point(Circle.Center, Increasing ? FromAngle : ToAngle, Circle.Radius);
         public Point EndPoint => new Point(Circle.Center, Increasing ? ToAngle : FromAngle, Circle.Radius);
+
+        public bool Intersects(IGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Point> Intersections(IGeometry geometry)
+        {
+            throw new NotImplementedException();
+        }
+
         public double StartAngle => GeometryUtil.NormalizeAngle(Increasing ? (FromAngle + Math.PI / 2) : (FromAngle - Math.PI / 2));
         public double EndAngle => GeometryUtil.NormalizeAngle(Increasing ? (ToAngle + Math.PI / 2) : (ToAngle - Math.PI / 2));
 
@@ -78,6 +90,15 @@ namespace Iridium.Geo
                       );
         }
 
+        public bool Intersects(ILinearGeometry other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<Point> Intersections(ILinearGeometry other)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

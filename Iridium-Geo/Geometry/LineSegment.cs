@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Iridium.Geo
 {
@@ -90,6 +91,14 @@ namespace Iridium.Geo
             return s >= 0.0 && s <= 1.0 && t >= 0.0 && t <= 1.0;
         }
 
+        public IEnumerable<Point> Intersections(LineSegment other)
+        {
+            var intersection = Intersection(other);
+
+            if (intersection != null)
+                yield return intersection;
+        }
+
         public Point ClosestPoint(Point point)
         {
             Vector vec1 = new Vector(point.X - P1.X, point.Y - P1.Y);
@@ -124,5 +133,25 @@ namespace Iridium.Geo
         ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin) => Rotate(angle, origin);
         ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy) => Translate(dx, dy);
         ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix) => Transform(matrix);
+
+        public bool Intersects(ILinearGeometry other)
+        {
+            switch (other)
+            {
+                case LineSegment seg: return Intersects(seg);
+
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<Point> Intersections(ILinearGeometry other)
+        {
+            switch (other)
+            {
+                case LineSegment seg: return Intersections(seg);
+
+                default: throw new NotImplementedException();
+            }
+        }
     }
 }

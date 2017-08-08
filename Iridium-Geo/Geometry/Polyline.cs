@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace Iridium.Geo
@@ -26,5 +27,20 @@ namespace Iridium.Geo
         ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin) => Rotate(angle, origin);
         ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy) => Translate(dx, dy);
         ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix) => Transform(matrix);
+
+        public bool Intersects(ILinearGeometry other)
+        {
+            switch (other)
+            {
+                case Poly p: return base.Intersects(p);
+                case LineSegment seg: return base.Intersects(seg);
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public IEnumerable<Point> Intersections(ILinearGeometry other)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

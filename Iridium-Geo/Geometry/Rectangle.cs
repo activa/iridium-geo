@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Iridium.Geo
 {
-    public class Rectangle : IGeometry, ITranslatable<Rectangle>, IScalable<Rectangle>, ITransformable<Polygon>, IClosedGeometry
+    public class Rectangle : IClosedGeometry, ITranslatable<Rectangle>, IScalable<Rectangle>, ITransformable<Polygon>
     {
         public Point P1 { get; }
         public Point P2 { get; }
@@ -64,6 +64,17 @@ namespace Iridium.Geo
         public double Area => Width * Height;
 
         public bool IsPointInside(Point p) => p.X >= P1.X && p.X <= P2.X && p.Y >= P1.Y && p.Y <= P2.Y;
+
+        public bool Overlaps(IGeometry geom)
+        {
+            switch (geom)
+            {
+                case Point p:
+                    return IsPointInside(p);
+                default:
+                    throw new NotImplementedException();
+            }
+        }
 
         IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
         IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);

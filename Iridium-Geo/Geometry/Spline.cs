@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Iridium.Geo
 {
-    public class Spline : ITransformable<Spline>, IMultiGeometry<ILinearGeometry>
+    public class Spline : ITransformable<Spline>, IMultiGeometry<ILinearGeometry>, ILinearGeometry, IClosedGeometry
     {
         public IReadOnlyList<ILinearGeometry> Curves { get; }
         public bool Closed { get; }
@@ -116,6 +116,54 @@ namespace Iridium.Geo
         public IEnumerator<ILinearGeometry> GetEnumerator()
         {
             return Curves.GetEnumerator();
+        }
+
+        ILinearGeometry IScalable<ILinearGeometry>.Scale(double factor, Point origin)
+        {
+            return Scale(factor, origin);
+        }
+
+        ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin)
+        {
+            return Rotate(angle, origin);
+        }
+
+        ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy)
+        {
+            return Translate(dx, dy);
+        }
+
+        ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix)
+        {
+            return Transform(matrix);
+        }
+
+        public bool Intersects(ILinearGeometry other)
+        {
+            return Curves.Any(c => c.Intersects(other));
+        }
+
+        public IEnumerable<Point> Intersections(ILinearGeometry other)
+        {
+            return Curves.SelectMany(c => c.Intersections(other));
+        }
+
+        public double Length => Curves.Sum(c => c.Length);
+        public double StartAngle => Curves.First().StartAngle;
+        public double EndAngle => Curves.Last().EndAngle;
+        public Point StartPoint => Curves.First().StartPoint;
+        public Point EndPoint => Curves.Last().EndPoint;
+
+        public bool Overlaps(IGeometry other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double Area => throw new NotImplementedException();
+
+        public bool IsPointInside(Point p)
+        {
+            throw new NotImplementedException();
         }
     }
 

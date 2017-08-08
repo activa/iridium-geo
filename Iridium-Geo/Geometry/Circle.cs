@@ -1,8 +1,13 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 
 namespace Iridium.Geo
 {
-    public class Circle : IGeometry, ITranslatable<Circle>, IRotatable<Circle>, IScalable<Circle>, ITransformable<Ellipse>, IIntersectable<Circle>, IIntersectable<Point>
+    public class Circle : IClosedGeometry, 
+                          ITranslatable<Circle>, IRotatable<Circle>, IScalable<Circle>, ITransformable<Ellipse>, 
+                          IIntersectable<Circle>, 
+                          IOverlappable<Point>, IOverlappable<Circle>
     {
         public Point Center { get; }
         public double Radius { get; }
@@ -95,19 +100,51 @@ namespace Iridium.Geo
             return Center.DistanceTo(other.Center) <= (Radius + other.Radius);
         }
 
+        public IEnumerable<Point> Intersections(Circle other)
+        {
+            throw new NotImplementedException();
+        }
+
         public double DistanceTo(Circle other)
         {
             return Math.Max(Center.DistanceTo(other.Center) - Radius - other.Radius, 0);
         }
 
-        public bool Intersects(Point pt)
-        {
-            return Center.DistanceTo(pt) <= Radius;
-        }
-
         public double DistanceTo(Point other)
         {
             return Math.Max(Center.DistanceTo(other) - Radius, 0);
+        }
+
+        public double Area => Radius * Radius * Math.PI;
+
+        public bool IsPointInside(Point p)
+        {
+            return Center.DistanceTo(p) <= Radius;
+        }
+
+        public bool Overlaps(IGeometry geom)
+        {
+            switch (geom)
+            {
+                case Point p:
+                    return Overlaps(p);
+
+                case Circle c:
+                    return Overlaps(c);
+
+                default:
+                    throw new NotImplementedException();
+            }
+        }
+
+        public bool Overlaps(Point other)
+        {
+            return IsPointInside(other);
+        }
+
+        public bool Overlaps(Circle other)
+        {
+            return Intersects(other);
         }
     }
 }
