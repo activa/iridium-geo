@@ -1,94 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
-    <MinimumVisualStudioVersion>10.0</MinimumVisualStudioVersion>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{75F821BC-2086-4EBB-9ED4-2F7D1C0D3045}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Iridium.Geo</RootNamespace>
-    <AssemblyName>Iridium.Geo</AssemblyName>
-    <DefaultLanguage>en-US</DefaultLanguage>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{786C830F-07A1-408B-BD7F-6EE04809D6DB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <TargetFrameworkProfile>Profile111</TargetFrameworkProfile>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFramework>netstandard1.0</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
+
   <ItemGroup>
-    <Compile Include="Geography\GeographyExtensions.cs" />
-    <Compile Include="Geography\Geohash.cs" />
-    <Compile Include="Geography\GeoProjection.cs" />
-    <Compile Include="Geography\LatLonProjection.cs" />
-    <Compile Include="Geography\LatLon.cs" />
-    <Compile Include="Geography\WebMercatorProjection.cs" />
-    <Compile Include="Geometry\Arc.cs" />
-    <Compile Include="Geometry\BezierCurve.cs" />
-    <Compile Include="Geometry\Circle.cs" />
-    <Compile Include="Drawing\Color.cs" />
-    <Compile Include="Drawing\DrawableSpline.cs" />
-    <Compile Include="Geometry\Ellipse.cs" />
-    <Compile Include="Drawing\Gradient.cs" />
-    <Compile Include="Geometry\IGeometry.cs" />
-    <Compile Include="Geometry\IMultiGeometry.cs" />
-    <Compile Include="Geometry\ITransformable.cs" />
-    <Compile Include="Geometry\LineSegment.cs" />
-    <Compile Include="Geometry\MultiGeometry.cs" />
-    <Compile Include="Geometry\MultiPoint.cs" />
-    <Compile Include="Geometry\MultiPolygon.cs" />
-    <Compile Include="Geometry\Point.cs" />
-    <Compile Include="Geometry\Poly.cs" />
-    <Compile Include="Geometry\Polygon.cs" />
-    <Compile Include="Geometry\Polyline.cs" />
-    <Compile Include="Geometry\Rectangle.cs" />
-    <Compile Include="Geometry\Spline.cs" />
-    <Compile Include="AffineTransform\AffineMatrix2D.cs" />
-    <Compile Include="Geometry\Vector.cs" />
-    <Compile Include="Drawing\VectorImage.cs" />
-    <Compile Include="GeometryUtil.cs" />
-    <Compile Include="Geometry\WKT\WKTParser.cs" />
-    <Compile Include="Geometry\WKT\WKTToken.cs" />
-    <Compile Include="Geometry\WKT\WKTTokenizer.cs" />
-    <Compile Include="Geometry\WKT\WKTTokenType.cs" />
-    <Compile Include="Geometry\WKT\WKTWriter.cs" />
-    <Compile Include="MathUtil.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <PackageReference Include="iridium.core" Version="1.5.0.220" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
   </ItemGroup>
-  <ItemGroup>
-    <Reference Include="Iridium-Core, Version=1.3.3.21827, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\iridium.core.1.3.3.23\lib\portable-net45+win8+wpa81\Iridium-Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.3.1\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+
 </Project>

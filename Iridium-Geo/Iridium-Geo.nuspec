@@ -13,13 +13,13 @@
     <description>Portable light-weight geometry/geography library</description>
     <language>en-US</language>
     <tags>iridium geo geometry geography gis</tags>
-    <copyright>Copyright 2015-2017 Philippe Leybaert</copyright>
+    <copyright>Copyright 2015-2018 Philippe Leybaert</copyright>
     <dependencies>
       <dependency id="iridium.core" version="1.3.3" />
       <dependency id="System.ValueTuple" version="4.3.1" />
     </dependencies>
   </metadata>
   <files>
-    <file src="Iridium.Geo.dll" target="lib\portable-net45+win8+wpa81" />
+    <file src="bin\Release\netstandard1.0\Iridium-Geo.dll" target="lib\netstandard1.0" />
   </files>
 </package>
