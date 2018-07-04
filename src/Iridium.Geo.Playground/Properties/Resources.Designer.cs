@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Iridium_Geo_Playground.Properties
+namespace Iridium.Geo.Playground.Properties
 {
 
 

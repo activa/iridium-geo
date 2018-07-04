@@ -1,7 +1,7 @@
-﻿<Application x:Class="Iridium_Geo_Playground.App"
+﻿<Application x:Class="Iridium.Geo.Playground.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Iridium_Geo_Playground"
+             xmlns:local="clr-namespace:Iridium.Geo.Playground"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

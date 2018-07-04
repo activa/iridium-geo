@@ -13,9 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using Geo = Iridium.Geo;
-
-namespace Iridium_Geo_Playground
+namespace Iridium.Geo.Playground
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -70,34 +68,34 @@ namespace Iridium_Geo_Playground
 
         private UIElement CreateElement(Geo.Polyline polygon, Color color)
         {
-            return new Polyline()
+            return new System.Windows.Shapes.Polyline()
             {
-                Points = new PointCollection(polygon.Points.Select(p => new Point(p.X, p.Y))),
+                Points = new PointCollection(polygon.Points.Select(p => new System.Windows.Point(p.X, p.Y))),
                 Stroke = new SolidColorBrush(color)
             };
         }
 
         private UIElement CreateElement(Geo.Polygon polygon, Color color)
         {
-            return new Polygon()
+            return new System.Windows.Shapes.Polygon()
             {
-                Points = new PointCollection(polygon.Points.Select(p => new Point(p.X, p.Y))),
+                Points = new PointCollection(polygon.Points.Select(p => new System.Windows.Point(p.X, p.Y))),
                 Stroke = new SolidColorBrush(color)
             };
         }
 
         private UIElement CreateElement(Geo.BezierCurve bezier, Color color)
         {
-            return new Polyline()
+            return new System.Windows.Shapes.Polyline()
             {
-                Points = new PointCollection(bezier.GeneratePoints(50).Select(p => new Point(p.X, p.Y))),
+                Points = new PointCollection(bezier.GeneratePoints(50).Select(p => new System.Windows.Point(p.X, p.Y))),
                 Stroke = new SolidColorBrush(color)
             };
         }
 
         private UIElement CreateElement(Geo.Point point, Color color)
         {
-            var circle = new Ellipse()
+            var circle = new System.Windows.Shapes.Ellipse()
             {
                 Width = 8,
                 Height = 8,

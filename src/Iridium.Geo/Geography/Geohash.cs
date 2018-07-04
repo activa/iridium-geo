@@ -26,7 +26,7 @@
 
 using System;
 using System.Text;
-using Iridium.Core;
+using Iridium.Units;
 
 namespace Iridium.Geo.Geography
 {
@@ -244,8 +244,11 @@ namespace Iridium.Geo.Geography
                     precision = i - 1;
                     break;
                 }
-            
-            return Neighbors(centerHash.Left(precision));
+
+            if (centerHash.Length <= precision)
+                return Neighbors(centerHash);
+            else
+                return Neighbors(centerHash.Substring(0,precision));
         }
 
         public static string[] PerimeterHashes(string centerHash, NumberWithUnit distance)

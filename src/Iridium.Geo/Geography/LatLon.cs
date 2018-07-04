@@ -25,7 +25,7 @@
 #endregion
 
 using System;
-using Iridium.Core;
+using Iridium.Units;
 
 namespace Iridium.Geo.Geography
 {

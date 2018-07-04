@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace Iridium_Geo_Playground
+namespace Iridium.Geo.Playground
 {
     /// <summary>
     /// Interaction logic for App.xaml

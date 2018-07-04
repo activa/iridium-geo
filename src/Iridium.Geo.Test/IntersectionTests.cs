@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Iridium.Geo;
 using NUnit.Framework;
 
-namespace Iridium_Geo_Test
+namespace Iridium.Geo.Test
 {
     [TestFixture]
     public class IntersectionTests
