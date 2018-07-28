@@ -19,35 +19,16 @@ namespace Iridium.Geo
             return Geometries.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-
         public Rectangle BoundingBox()
         {
             return Geometries.BoundingBox();
         }
 
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx,dy);
-        }
-
-        IGeometry IGeometry.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle,origin);
-        }
-
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx,dy);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle,origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
 
         public Point ClosestPoint(Point p)
         {

@@ -6,7 +6,7 @@ namespace Iridium.Geo
 {
     public class BezierCurve : ICurve, ITransformable<BezierCurve>, IIntersectable<LineSegment>, IIntersectable<BezierCurve>
     {
-        private static double[][] _factorals = {
+        private static readonly double[][] _factorals = {
             new double[] {1},
             new double[] {1,1},
             new double[] {1,2,1},
@@ -218,8 +218,8 @@ namespace Iridium.Geo
             if (bbox1.Area + bbox2.Area < 0.01)
                 return true;
 
-            (var c1a, var c1b) = this.Split(0.5);
-            (var c2a, var c2b) = c2.Split(0.5);
+            var (c1a, c1b) = this.Split(0.5);
+            var (c2a, c2b) = c2.Split(0.5);
 
             return c1a.Intersects(c2a) || c1a.Intersects(c2b) || c1b.Intersects(c2a) || c1b.Intersects(c2b);
         }
@@ -246,8 +246,8 @@ namespace Iridium.Geo
                     return;
                 }
 
-                (var c1a, var c1b) = c1.Split(0.5);
-                (var c2a, var c2b) = c2.Split(0.5);
+                var (c1a, c1b) = c1.Split(0.5);
+                var (c2a, c2b) = c2.Split(0.5);
 
                 checkIntersections(c1a,c2a);
                 checkIntersections(c1a,c2b);

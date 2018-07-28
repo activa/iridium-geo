@@ -13,25 +13,10 @@ namespace Iridium.Geo
             Polylines = polylines.ToArray();
         }
 
-        IGeometry IGeometry.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle, origin);
-        }
-
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
-        }
-
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx, dy);
-        }
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
 
         public Point ClosestPoint(Point p)
         {

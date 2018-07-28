@@ -48,9 +48,7 @@ namespace Iridium.Geo
 
         public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p)
         {
-            double distance;
-
-            return ClosestPoint(geometries, p, out distance);
+            return ClosestPoint(geometries, p, out _);
         }
 
         public static Point ClosestPoint(this IEnumerable<IGeometry> geometries, Point p, out double minDistance)
@@ -159,8 +157,5 @@ namespace Iridium.Geo
 
             throw new NotImplementedException();
         }
-
-
     }
-
 }

@@ -2,8 +2,8 @@ namespace Iridium.Geo
 {
     internal class WKTToken
     {
-        public WKTTokenType Type;
-        public string Token;
+        public readonly WKTTokenType Type;
+        public readonly string Token;
         public double Number { get; }
 
         public WKTToken(WKTTokenType tokenType)

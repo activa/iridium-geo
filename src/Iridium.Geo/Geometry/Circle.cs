@@ -54,45 +54,19 @@ namespace Iridium.Geo
             return new Point(p, Center.AngleTo(p), Radius);
         }
 
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
-        }
 
         public Rectangle BoundingBox()
         {
             return new Rectangle(new Point(Center.X - Radius, Center.Y - Radius), Radius * 2, Radius * 2);
         }
 
-        IGeometry IGeometry.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle, origin);
-        }
-
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx, dy);
-        }
-
-        Ellipse IScalable<Ellipse>.Scale(double factor, Point origin)
-        {
-            return new Ellipse(Scale(factor,origin));
-        }
-
-        Ellipse IRotatable<Ellipse>.Rotate(double angle, Point origin)
-        {
-            return new Ellipse(Rotate(angle,origin));
-        }
-
-        Ellipse ITranslatable<Ellipse>.Translate(double dx, double dy)
-        {
-            return new Ellipse(Translate(dx,dy));
-        }
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
+        Ellipse IScalable<Ellipse>.Scale(double factor, Point origin) => new Ellipse(Scale(factor,origin));
+        Ellipse IRotatable<Ellipse>.Rotate(double angle, Point origin) => new Ellipse(Rotate(angle,origin));
+        Ellipse ITranslatable<Ellipse>.Translate(double dx, double dy) => new Ellipse(Translate(dx,dy));
 
         public bool Intersects(Circle other)
         {

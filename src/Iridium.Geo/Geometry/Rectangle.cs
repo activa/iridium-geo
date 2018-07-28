@@ -14,8 +14,8 @@ namespace Iridium.Geo
         public double MaxX => P2.X;
         public double MaxY => P2.Y;
 
-        public double Width => P2.X - P1.X;
-        public double Height => P2.Y - P1.Y;
+        public double Width => Math.Abs(P2.X - P1.X);
+        public double Height => Math.Abs(P2.Y - P1.Y);
 
         public Rectangle(Point p1, Point p2)
         {
@@ -34,6 +34,11 @@ namespace Iridium.Geo
             return !(r.MinX > MaxX || r.MaxX < MinX || r.MinY > MaxY || r.MaxY < MinY);
         }
 
+        public bool IsPointInside(Point p)
+        {
+            return p.X >= P1.X && p.X <= P2.X && p.Y >= P1.Y && p.Y <= P2.Y;
+        }
+
         public static implicit operator Polygon(Rectangle rectangle)
         {
             return new Polygon(rectangle.CornerPoints());
@@ -47,23 +52,14 @@ namespace Iridium.Geo
             yield return new Point(MinX,MaxY);
         }
 
-        public Rectangle BoundingBox()
-        {
-            return this;
-        }
-
+        public Rectangle BoundingBox() => this;
         public Point ClosestPoint(Point p) => new Polygon(CornerPoints()).ClosestPoint(p);
-
-        public Point Center => new Point(P1.X + Width/2, P1.Y + Height/2);
-
+        public Point Center => new Point(P1.X + (P2.X - P1.X)/2, P1.Y + (P2.Y - P1.Y)/2);
+        public double Area => Width * Height;
         public Rectangle Translate(double dx, double dy) => new Rectangle(P1.Translate(dx,dy), P2.Translate(dx,dy));
         public Rectangle Scale(double factor, Point origin) => new Rectangle(P1.Scale(factor,origin), P2.Scale(factor,origin));
         public Polygon Rotate(double angle, Point origin = null) => new Polygon(CornerPoints().Rotate(angle,origin));
         public Polygon Transform(AffineMatrix2D matrix) => new Polygon(CornerPoints().Transform(matrix));
-
-        public double Area => Width * Height;
-
-        public bool IsPointInside(Point p) => p.X >= P1.X && p.X <= P2.X && p.Y >= P1.Y && p.Y <= P2.Y;
 
         public bool Overlaps(IGeometry geom)
         {

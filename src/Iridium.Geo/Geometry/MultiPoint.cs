@@ -13,20 +13,10 @@ namespace Iridium.Geo
             Points = points.ToArray();
         }
 
-        IGeometry IGeometry.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle, origin);
-        }
-
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
-        }
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
 
         public Point ClosestPoint(Point p)
         {
@@ -38,10 +28,6 @@ namespace Iridium.Geo
             return new MultiPoint(Points.Scale(factor, origin));
         }
 
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx, dy);
-        }
 
         public MultiPoint Rotate(double angle, Point origin = null)
         {
@@ -63,20 +49,14 @@ namespace Iridium.Geo
             return new MultiPoint(Points.Transform(matrix));
         }
 
-        IEnumerator<Point> IEnumerable<Point>.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator<Point> IEnumerable<Point>.GetEnumerator() => GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         public IEnumerator<Point> GetEnumerator()
         {
             return Points.GetEnumerator();
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
 
         public bool Intersects(Point other)
         {

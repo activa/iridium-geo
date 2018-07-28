@@ -171,10 +171,10 @@ namespace Iridium.Geo.Test
         public void PolygonArea()
         {
             Rectangle rect = new Rectangle(new Point(5,5), new Point(20,10) );
-            Polygon p = rect;
+            Polygon p = new Polygon(new[] {new Point(5, 5), new Point(20, 5), new Point(20, 10), new Point(5, 10),});
 
-            Assert.That(rect.Area, Is.EqualTo(75));
-            Assert.That(p.Area, Is.EqualTo(75));
+            Assert.That(rect.Area, Is.EqualTo(75).Within(0.00001));
+            Assert.That(p.Area, Is.EqualTo(75).Within(0.00001));
         }
 
 

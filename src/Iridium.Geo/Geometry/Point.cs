@@ -2,7 +2,7 @@ using System;
 
 namespace Iridium.Geo
 {
-	public sealed class Point : IGeometry, ITransformable<Point>
+    public sealed class Point : IGeometry, ITransformable<Point>
     {
         public static Point Zero = new Point(0, 0);
 
@@ -15,7 +15,7 @@ namespace Iridium.Geo
             Y = p.Y;
         }
 
-        public Point(double x, double y) 
+        public Point(double x, double y)
         {
             X = x;
             Y = y;
@@ -25,6 +25,12 @@ namespace Iridium.Geo
         {
             X = p.X + distance * Math.Cos(angle);
             Y = p.Y + distance * Math.Sin(angle);
+        }
+
+        public Point(Point p, Vector v)
+        {
+            X = p.X + v.X;
+            Y = p.Y + v.Y;
         }
 
         public double AngleTo(Point p)
@@ -37,9 +43,9 @@ namespace Iridium.Geo
             return Math.Sqrt(MathUtil.Square(X - p.X) + MathUtil.Square(Y - p.Y));
         }
 
-        public Point Translate(double dx,double dy)
+        public Point Translate(double dx, double dy)
         {
-            return new Point(X+dx,Y+dy);
+            return new Point(X + dx, Y + dy);
         }
 
         public Point Rotate(double angle, Point origin = null)
@@ -57,70 +63,69 @@ namespace Iridium.Geo
             if (origin == null)
                 return new Point(X * factor, Y * factor);
             else
-                return new Point((X-origin.X) * factor + origin.X, (Y-origin.Y) * factor + origin.Y);
+                return new Point((X - origin.X) * factor + origin.X, (Y - origin.Y) * factor + origin.Y);
         }
 
-	    public Point Transform(AffineMatrix2D matrix)
-	    {
-	        return new Point(
+        public Point Transform(AffineMatrix2D matrix)
+        {
+            return new Point(
                 X * matrix.xx + Y * matrix.xy + matrix.tx,
                 X * matrix.yx + Y * matrix.yy + matrix.ty
             );
-	    }
-
-	    public Point ClosestPoint(Point p)
-	    {
-	        return this;
-	    }
-
-	    public Point Transform(Func<Point, Point> conversion)
-	    {
-	        return conversion(this);
-	    }
-
-	    public Rectangle BoundingBox()
-	    {
-	        return new Rectangle(this,this);
-	    }
-
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx,dy);
         }
 
-        IGeometry IGeometry.Rotate(double angle, Point origin)
+        public Point ClosestPoint(Point p)
         {
-            return Rotate(angle, origin);
+            return this;
         }
 
-        IGeometry IGeometry.Scale(double factor, Point origin)
+        public Point Transform(Func<Point, Point> conversion)
         {
-            return Scale(factor, origin);
+            return conversion(this);
         }
 
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
+        public Rectangle BoundingBox()
         {
-            return Transform(matrix);
+            return new Rectangle(this, this);
         }
+
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
 
         public Point Mirror(Point aroundPoint)
         {
             return new Point(aroundPoint.X * 2 - X, aroundPoint.Y * 2 - Y);
         }
 
+        public static Point operator +(Point p, Vector v)
+        {
+            return new Point(p.X + v.X, p.Y + v.Y);
+        }
+
+        public static Point operator -(Point p, Vector v)
+        {
+            return new Point(p.X - v.X, p.Y - v.Y);
+        }
+
+        public static implicit operator (double x,double y)(Point p) => (p.X, p.Y);
+        public static implicit operator Point((double x,double y) p) => new Point(p.x,p.y);
+
         public override bool Equals(object obj)
-	    {
-	        var p2 = obj as Point;
+        {
+            if (obj is Point point)
+                return point.X == X && point.Y == Y;
 
-	        if (p2 != null)
-	            return p2.X == X && p2.Y == Y;
+            return false;
+        }
 
-	        return false;
-	    }
-
-	    public override int GetHashCode()
-	    {
-	        unchecked { return (int) ((BitConverter.DoubleToInt64Bits(X) ^ BitConverter.DoubleToInt64Bits(Y))*2654435761); }
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (int) ((BitConverter.DoubleToInt64Bits(X) ^ BitConverter.DoubleToInt64Bits(Y)) * 2654435761);
+            }
         }
 
 #if DEBUG
@@ -129,9 +134,5 @@ namespace Iridium.Geo
             return $"({X},{Y})";
         }
 #endif
-
-
     }
-
-
 }

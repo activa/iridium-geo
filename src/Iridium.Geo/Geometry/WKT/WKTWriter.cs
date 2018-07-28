@@ -10,25 +10,17 @@ namespace Iridium.Geo
     {
         public static string ToWKT(IGeometry geometry)
         {
-            var point = geometry as Point;
-
-            if (point != null)
+            if (geometry is Point point)
                 return ToWKT(point, true);
 
-            var polygon = geometry as Poly;
-            
-            if (polygon != null)
-                return ToWKT(polygon, true);
+            if (geometry is Poly poly)
+                return ToWKT(poly, true);
 
-            var mPolygon = geometry as MultiPolyline;
+            if (geometry is MultiPolyline multiPolyline)
+                return ToWKT(multiPolyline, true);
 
-            if (mPolygon != null)
-                return ToWKT(mPolygon, true);
-
-            var mPoint = geometry as MultiPoint;
-
-            if (mPoint != null)
-                return ToWKT(mPoint, true);
+            if (geometry is MultiPoint multiPoint)
+                return ToWKT(multiPoint, true);
 
             throw new Exception($"Can't generate WKT for {geometry?.GetType()?.Name}");
         }

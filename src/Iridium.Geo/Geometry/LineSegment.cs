@@ -26,7 +26,7 @@ namespace Iridium.Geo
             P2 = new Point(p1,angle,length);
         }
 
-        public double Angle => (double) (_angle ?? (_angle = Math.Atan2(P2.Y-P1.Y,P2.X-P1.X)));
+        public double Angle => (double) (_angle ?? (_angle = GeometryUtil.NormalizeAngle(Math.Atan2(P2.Y-P1.Y,P2.X-P1.X))));
         public double Length => (double) (_length ?? (_length = P1.DistanceTo(P2)));
         double ILinearGeometry.StartAngle => Angle;
         double ILinearGeometry.EndAngle => Angle;
@@ -153,5 +153,9 @@ namespace Iridium.Geo
                 default: throw new NotImplementedException();
             }
         }
+
+        public Vector Vector => new Vector(P2.X - P1.X, P2.Y - P1.Y);
+
+        public static implicit operator ((double x, double y) p1, (double x, double y) p2)(LineSegment seg) => ((seg.P1.X, seg.P1.Y), (seg.P2.X, seg.P2.Y));
     }
 }

@@ -45,16 +45,16 @@ namespace Iridium.Geo
             return ParseGeometry();
         }
 
-        private WKTToken CurrentToken;
+        private WKTToken _currentToken;
 
         private void NextToken()
         {
-            CurrentToken = _tokenizer.NextToken();
+            _currentToken = _tokenizer.NextToken();
         }
 
         private void NextToken(WKTTokenType expected)
         {
-            if (expected != CurrentToken.Type)
+            if (expected != _currentToken.Type)
                 throw new Exception(expected + " expected");
 
             NextToken();
@@ -63,7 +63,7 @@ namespace Iridium.Geo
 
         private IGeometry ParseGeometry()
         {
-            switch (CurrentToken.Type)
+            switch (_currentToken.Type)
             {
                 case WKTTokenType.Point:
                     return ParsePoint();
@@ -90,13 +90,13 @@ namespace Iridium.Geo
             {
                 points.Add(ParsePointNumbers());
 
-                if (CurrentToken.Type == WKTTokenType.Comma)
+                if (_currentToken.Type == WKTTokenType.Comma)
                 {
                     NextToken();
                     continue;
                 }
 
-                if (CurrentToken.Type == WKTTokenType.Close)
+                if (_currentToken.Type == WKTTokenType.Close)
                     return points;
 
                 throw new Exception(") expected for linestring");
@@ -125,7 +125,7 @@ namespace Iridium.Geo
 
             for (;;)
             {
-                if (CurrentToken.Type == WKTTokenType.Close)
+                if (_currentToken.Type == WKTTokenType.Close)
                     break;
 
                 NextToken(WKTTokenType.Open);
@@ -134,7 +134,7 @@ namespace Iridium.Geo
 
                 NextToken(WKTTokenType.Close);
 
-                if (CurrentToken.Type == WKTTokenType.Comma)
+                if (_currentToken.Type == WKTTokenType.Comma)
                     NextToken();
             }
 
@@ -152,10 +152,10 @@ namespace Iridium.Geo
 
             for (;;)
             {
-                if (CurrentToken.Type == WKTTokenType.Close)
+                if (_currentToken.Type == WKTTokenType.Close)
                     break;
 
-                if (CurrentToken.Type == WKTTokenType.Open)
+                if (_currentToken.Type == WKTTokenType.Open)
                 {
                     NextToken();
 
@@ -168,7 +168,7 @@ namespace Iridium.Geo
                     points.Add(ParsePointNumbers());
                 }
 
-                if (CurrentToken.Type == WKTTokenType.Comma)
+                if (_currentToken.Type == WKTTokenType.Comma)
                     NextToken();
 
             }
@@ -200,10 +200,10 @@ namespace Iridium.Geo
 
         private double ParseNumber()
         {
-            if (CurrentToken.Type != WKTTokenType.Number)
+            if (_currentToken.Type != WKTTokenType.Number)
                 throw new Exception("number expected");
 
-            double n = CurrentToken.Number;
+            double n = _currentToken.Number;
 
             NextToken();
 

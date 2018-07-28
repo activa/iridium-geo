@@ -26,7 +26,7 @@ namespace Iridium.Geo
             foreach (var curve in Curves)
             {
                 Point cp = curve.ClosestPoint(p);
-                
+
                 var distance = p.DistanceTo(cp);
 
                 if (distance < minDistance)
@@ -46,13 +46,13 @@ namespace Iridium.Geo
 
         public Spline Translate(double dx, double dy)
         {
-            return new Spline(Curves.Translate(dx,dy), Closed);
+            return new Spline(Curves.Translate(dx, dy), Closed);
         }
 
-		public Spline Rotate(double angle, Point origin = null)
-		{
-			return new Spline(Curves.Rotate(angle,origin), Closed);
-		}
+        public Spline Rotate(double angle, Point origin = null)
+        {
+            return new Spline(Curves.Rotate(angle, origin), Closed);
+        }
 
         public Spline Transform(AffineMatrix2D matrix)
         {
@@ -60,12 +60,12 @@ namespace Iridium.Geo
         }
 
 
-		public Rectangle BoundingBox()
+        public Rectangle BoundingBox()
         {
             if (_boundingBox != null)
                 return _boundingBox;
 
-            double x1=double.MaxValue, y1=double.MaxValue, x2=double.MinValue, y2=double.MinValue;
+            double x1 = double.MaxValue, y1 = double.MaxValue, x2 = double.MinValue, y2 = double.MinValue;
 
             foreach (var curve in Curves)
             {
@@ -77,65 +77,18 @@ namespace Iridium.Geo
                 y2 = Math.Max(y2, box.MaxY);
             }
 
-            return (_boundingBox = new Rectangle(new Point(x1,y1), new Point(x2,y2) ));
-        }
-
-
-        IGeometry IGeometry.Translate(double dx, double dy)
-        {
-            return Translate(dx,dy);
-        }
-
-        IGeometry IGeometry.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle,origin);
-        }
-
-        IGeometry IGeometry.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        IGeometry IGeometry.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
+            return (_boundingBox = new Rectangle(new Point(x1, y1), new Point(x2, y2)));
         }
 
         public Point ClosestPoint(Point p)
         {
-            double distance;
-
-            return ClosestPoint(p, out distance);
+            return ClosestPoint(p, out var distance);
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
 
         public IEnumerator<ILinearGeometry> GetEnumerator()
         {
             return Curves.GetEnumerator();
-        }
-
-        ILinearGeometry IScalable<ILinearGeometry>.Scale(double factor, Point origin)
-        {
-            return Scale(factor, origin);
-        }
-
-        ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin)
-        {
-            return Rotate(angle, origin);
-        }
-
-        ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy)
-        {
-            return Translate(dx, dy);
-        }
-
-        ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix)
-        {
-            return Transform(matrix);
         }
 
         public bool Intersects(ILinearGeometry other)
@@ -165,6 +118,18 @@ namespace Iridium.Geo
         {
             throw new NotImplementedException();
         }
+
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+        IGeometry IGeometry.Translate(double dx, double dy) => Translate(dx, dy);
+        IGeometry IGeometry.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        IGeometry IGeometry.Scale(double factor, Point origin) => Scale(factor, origin);
+        IGeometry IGeometry.Transform(AffineMatrix2D matrix) => Transform(matrix);
+
+        ILinearGeometry IScalable<ILinearGeometry>.Scale(double factor, Point origin) => Scale(factor, origin);
+        ILinearGeometry IRotatable<ILinearGeometry>.Rotate(double angle, Point origin) => Rotate(angle, origin);
+        ILinearGeometry ITranslatable<ILinearGeometry>.Translate(double dx, double dy) => Translate(dx, dy);
+        ILinearGeometry ITransformable<ILinearGeometry>.Transform(AffineMatrix2D matrix) => Transform(matrix);
     }
 
 }

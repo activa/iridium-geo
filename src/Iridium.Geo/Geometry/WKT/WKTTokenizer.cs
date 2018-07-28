@@ -110,9 +110,7 @@ namespace Iridium.Geo
                 if (char.IsWhiteSpace(c))
                     continue;
 
-                WKTTokenType tokenType;
-
-                if (_tokenTypes.TryGetValue(c, out tokenType))
+                if (_tokenTypes.TryGetValue(c, out var tokenType))
                 {
                     return new WKTToken(tokenType);
                 }
@@ -137,9 +135,7 @@ namespace Iridium.Geo
 
             for (;;)
             {
-                WKTTokenType match;
-
-                if (_keywords.TryGetValue(keyword, out match))
+                if (_keywords.TryGetValue(keyword, out var match))
                 {
                     return new WKTToken(match);
                 }
