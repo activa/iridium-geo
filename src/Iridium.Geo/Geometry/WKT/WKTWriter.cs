@@ -16,8 +16,8 @@ namespace Iridium.Geo
             if (geometry is Poly poly)
                 return ToWKT(poly, true);
 
-            if (geometry is MultiPolyline multiPolyline)
-                return ToWKT(multiPolyline, true);
+            if (geometry is MultiPoly multiPoly)
+                return ToWKT(multiPoly, true);
 
             if (geometry is MultiPoint multiPoint)
                 return ToWKT(multiPoint, true);
@@ -50,7 +50,7 @@ namespace Iridium.Geo
             return includeWrapper ? $"LINESTRING ({ToWKT(polygon.Points)})" : ToWKT(polygon.Points);
         }
 
-        private static string ToWKT(MultiPolyline multiPolygon, bool includeWrapper)
+        private static string ToWKT(MultiPoly multiPolygon, bool includeWrapper)
         {
             return includeWrapper ? $"MULTILINESTRING ({ToWKT(multiPolygon.Polylines)})" : ToWKT(multiPolygon.Polylines);
         }

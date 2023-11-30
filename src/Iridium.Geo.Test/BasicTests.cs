@@ -1,6 +1,8 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
+using System.Numerics;
 using Iridium.Geo;
+using MathNet.Numerics.LinearAlgebra;
 using NUnit.Framework;
 
 namespace Iridium.Geo.Test
@@ -41,6 +43,21 @@ namespace Iridium.Geo.Test
             Assert.That(boundingBox.P1.X, Is.EqualTo(-10.0));
         }
 
+
+        [Test]
+        public void LineSegmentAngle()
+        {
+            LineSegment seg = new LineSegment(new Point(0, 0), new Point(0, 1));
+
+            Assert.That(seg.Angle, Is.EqualTo(Math.PI / 2));
+        }
+
+
+    }
+
+    [TestFixture]
+    public class TransformTests
+    {
         [Test]
         public void RotateEllipse90()
         {
@@ -56,7 +73,7 @@ namespace Iridium.Geo.Test
         }
 
         [Test]
-        public void PointRotate()
+        public void RotatePoint()
         {
             Point p = new Point(4, 3);
 
@@ -64,7 +81,7 @@ namespace Iridium.Geo.Test
 
             var angle = Math.Atan2(4, -3);
 
-            Point p2a = p.Transform(AffineMatrix2D.Factory.Rotate(Math.PI / 2));
+            Point p2a = p.Transform(AffineMatrix2D.CreateRotate(Math.PI / 2));
             Point p2b = p.Rotate(Math.PI / 2);
             Point p2c = new Point(Point.Zero, angle, 5);
 
@@ -82,7 +99,7 @@ namespace Iridium.Geo.Test
             Point p = new Point(4, 3);
             Point p2 = new Point(-2, -1);
 
-            Point p2a = p.Transform(AffineMatrix2D.Factory.Translate(-1, -1).Rotate(Math.PI).Translate(1, 1));
+            Point p2a = p.Transform(AffineMatrix2D.CreateTranslate(-1, -1).Rotate(Math.PI).Translate(1, 1));
             Point p2b = p.Mirror(new Point(1, 1));
 
             Assert.That(p2b.X, Is.EqualTo(p2.X).Within(0.000001));
@@ -93,13 +110,13 @@ namespace Iridium.Geo.Test
         }
 
         [Test]
-        public void MatrixTranslate()
+        public void TranslatePoint()
         {
             Point p = new Point(4, 3);
             Point p2 = new Point(6, 4);
 
             Point p2a = p.Translate(2, 1);
-            Point p2b = p.Transform(AffineMatrix2D.Factory.Translate(2, 1));
+            Point p2b = p.Transform(AffineMatrix2D.CreateTranslate(2, 1));
             Point p2c = p.Transform(AffineMatrix2D.Identity.Translate(2, 1));
 
             Assert.That(p2a.X, Is.EqualTo(p2.X));
@@ -111,98 +128,147 @@ namespace Iridium.Geo.Test
 
         }
 
-        [Test]
-        public void LineSegmentAngle()
+        public class MatrixTestCase
         {
-            LineSegment seg = new LineSegment(new Point(0, 0), new Point(0, 1));
-
-            Assert.That(seg.Angle, Is.EqualTo(Math.PI / 2));
-        }
-
-        [Test]
-        public void ArcToBezier()
-        {
-            Circle circle = new Circle(new Point(0, 0), 10);
-
-            var bezier = BezierCurve.FromArc(circle, 0, Math.PI / 2);
-
-            for (double t = 0.0; t <= 1.0; t += 0.001)
+            public MatrixTestCase(AffineMatrix2D matrix, Point point, Point expected)
             {
-                Point p = bezier.PointOnCurve(t);
-
-                Assert.That(p.DistanceTo(Point.Zero), Is.EqualTo(10).Within(0.1).Percent);
-                Assert.That(circle.Center.AngleTo(p), Is.InRange(0,Math.PI/2));
-
-            }
-        }
-
-        private Random _rnd = new Random();
-
-        Point randomPoint() => new Point(_rnd.NextDouble() * 10, _rnd.NextDouble() * 10);
-
-        BezierCurve randomBezier(int order = -1)
-        {
-            if (order < 0)
-                order = _rnd.Next(5);
-
-            var points = new Point[order+1];
-
-            for (int i = 0; i < order+1; i++)
-                points[i] = randomPoint();
-
-            return new BezierCurve(points);
-        }
-
-        private bool PointsEqual(Point p1, Point p2) => Math.Abs(p1.X-p2.X) < 0.001 && Math.Abs(p1.Y-p2.Y) < 0.001;
-
-        [Test][Repeat(1000)]
-        public void SplitBezier()
-        {
-            Random rnd = new Random();
-
-            BezierCurve curve = randomBezier();
-
-            double t = rnd.NextDouble();
-
-            var splitPoint = curve.PointOnCurve(t);
-
-            var subCurves = curve.Split(t);
-
-            Assert.That(subCurves.Item1.StartPoint.X , Is.EqualTo(curve.StartPoint.X).Within(0.001));
-            Assert.That(subCurves.Item1.StartPoint.Y, Is.EqualTo(curve.StartPoint.Y).Within(0.001));
-
-            Assert.That(subCurves.Item1.EndPoint.X, Is.EqualTo(splitPoint.X).Within(0.001));
-            Assert.That(subCurves.Item1.EndPoint.Y, Is.EqualTo(splitPoint.Y).Within(0.001));
-            Assert.That(subCurves.Item2.StartPoint.X, Is.EqualTo(splitPoint.X).Within(0.001));
-            Assert.That(subCurves.Item2.StartPoint.Y, Is.EqualTo(splitPoint.Y).Within(0.001));
-
-            Assert.That(subCurves.Item2.EndPoint.X, Is.EqualTo(curve.EndPoint.X).Within(0.001));
-            Assert.That(subCurves.Item2.EndPoint.Y, Is.EqualTo(curve.EndPoint.Y).Within(0.001));
-
-            for (var t2 = 0.0; t2 <= 1.0; t2 += 0.1)
-            {
-                if (t2 <= t && t > 0.0)
-                {
-                    Assert.That(PointsEqual(curve.PointOnCurve(t2), subCurves.Item1.PointOnCurve(t2 / t)));
-                }
-
-                if (t2 >= t && t < 1.0)
-                {
-                    Assert.That(PointsEqual(curve.PointOnCurve(t2), subCurves.Item2.PointOnCurve(((t2-t) / (1-t)))));
-                }
+                Matrix = matrix;
+                Point = point;
+                Expected = expected;
             }
 
+            public AffineMatrix2D Matrix;
+            public Point Point;
+            public Point Expected;
+        }
+
+        public static IEnumerable<MatrixTestCase> MatrixTestCases()
+        {
+            var p = new Point(1, 2);
+
+            yield return new MatrixTestCase(AffineMatrix2D.Identity, p, p);
+            yield return new MatrixTestCase(AffineMatrix2D.CreateScale(2, 3), p, new Point(p.X * 2, p.Y * 3));
+            yield return new MatrixTestCase(AffineMatrix2D.CreateScale(2, 3, new Point(5,7)), p, new Point(5-8, 7-15));
+            yield return new MatrixTestCase(AffineMatrix2D.MirrorX, p, new Point(1, -2));
+            yield return new MatrixTestCase(AffineMatrix2D.MirrorY, p, new Point(-1, 2));
+            yield return new MatrixTestCase(AffineMatrix2D.CreateMirror(new Point(5, 7)), p, new Point(9, 12));
+            yield return new MatrixTestCase(AffineMatrix2D.CreateMirror(new LineSegment(new Point(1, 4), new Point(3, 2))), p, new Point(3, 4));
+            yield return new MatrixTestCase(AffineMatrix2D.CreateRotate(Math.PI / 2), p, new Point(-2, 1));
+            yield return new MatrixTestCase(AffineMatrix2D.CreateRotate(Math.PI / 2, new Point(3,1)), p, new Point(2, -1));
         }
 
         [Test]
-        public void BezierIntersection()
+        [TestCaseSource(nameof(MatrixTestCases))]
+        public void TestMatrixTransformations(MatrixTestCase testCase)
         {
-            var beziers1 = Enumerable.Range(0, 100).Select(_ => randomBezier());
-            var beziers2 = Enumerable.Range(0, 100).Select(_ => randomBezier());
+            var result = testCase.Point.Transform(testCase.Matrix);
 
-            var intersections = (from b1 in beziers1 from b2 in beziers2 select b1.Intersections(b2).ToArray());
+            Assert.That(result.X, Is.EqualTo(testCase.Expected.X).Within(0.0001), "X");
+            Assert.That(result.Y, Is.EqualTo(testCase.Expected.Y).Within(0.0001), "Y");
 
-            int n = intersections.Count();
+            TestRectangleTransform(testCase.Matrix);
+            TestPolygonTransform(testCase.Matrix);
+            TestEllipseTransform(testCase.Matrix);
+        }
+
+        private void TestRectangleTransform(AffineMatrix2D matrix)
+        {
+            Rectangle r = new Rectangle(RandomPoint(), RandomPoint());
+
+            Polygon p = r.Transform(matrix);
+
+            ComparePoints(p.Points[0], r.P1.Transform(matrix));
+            ComparePoints(p.Points[2], r.P2.Transform(matrix));
+        }
+
+        private void TestPolygonTransform(AffineMatrix2D matrix)
+        {
+            Polygon orig = new Polygon(new[] {RandomPoint(), RandomPoint(), RandomPoint(), RandomPoint()});
+            Polygon transformed = orig.Transform(matrix);
+
+            ComparePoints(transformed.Points[0], orig.Points[0].Transform(matrix));
+            ComparePoints(transformed.Points[1], orig.Points[1].Transform(matrix));
+            ComparePoints(transformed.Points[2], orig.Points[2].Transform(matrix));
+            ComparePoints(transformed.Points[3], orig.Points[3].Transform(matrix));
+        }
+
+        private void TestEllipseTransform(AffineMatrix2D matrix)
+        {
+            var (p1, p2) = (RandomPoint(), RandomPoint());
+
+            Ellipse orig = new Ellipse(p1, p2, p1.DistanceTo(p2) * 1.5);
+            Ellipse transformed = orig.Transform(matrix);
+
+            ComparePoints(orig.PointAt(1).Transform(matrix), transformed.PointAt(1));
+        }
+
+        private static void ComparePoints(Point point, Point expected)
+        {
+            if (Math.Abs(point.X-expected.X) < 0.0001 && Math.Abs(point.Y-expected.Y) < 0.0001)
+                return;
+
+            Assert.Fail($"Expected: ({expected.X},{expected.Y}), Actual: ({point.X},{point.Y})");
+        }
+
+        private static Random _rnd = new Random();
+        private static Point RandomPoint() => new Point(_rnd.NextDouble() * 100, _rnd.NextDouble() * 100);
+    }
+
+    [TestFixture]
+    public class MatrixTests
+    {
+        private (Matrix<double>,AffineMatrix2D) CreateTestMatrix()
+        {
+            var matrix1 = MathNet.Numerics.LinearAlgebra.Double.Matrix.Build.Dense(3, 3, new double[]
+            {
+                1,2,3,
+                4,5,6,
+                0,0,1
+            }).Transpose();
+
+            var matrix2 = new AffineMatrix2D(1, 2, 4, 5, 3, 6);
+
+            Assert.That(matrix2.xx, Is.EqualTo(matrix1[0, 0]).Within(0.001), "xx");
+            Assert.That(matrix2.xy, Is.EqualTo(matrix1[0, 1]).Within(0.001), "xy");
+            Assert.That(matrix2.tx, Is.EqualTo(matrix1[0, 2]).Within(0.001), "tx");
+            Assert.That(matrix2.yx, Is.EqualTo(matrix1[1, 0]).Within(0.001), "yx");
+            Assert.That(matrix2.yy, Is.EqualTo(matrix1[1, 1]).Within(0.001), "yy");
+            Assert.That(matrix2.ty, Is.EqualTo(matrix1[1, 2]).Within(0.001), "ty");
+
+            return (matrix1, matrix2);
+        }
+
+        private void CompareMatrix(Matrix<double> matrix1, AffineMatrix2D matrix2)
+        {
+            Assert.That(matrix2.xx, Is.EqualTo(matrix1[0, 0]).Within(0.001), "xx");
+            Assert.That(matrix2.xy, Is.EqualTo(matrix1[0, 1]).Within(0.001), "xy");
+            Assert.That(matrix2.tx, Is.EqualTo(matrix1[0, 2]).Within(0.001), "tx");
+            Assert.That(matrix2.yx, Is.EqualTo(matrix1[1, 0]).Within(0.001), "yx");
+            Assert.That(matrix2.yy, Is.EqualTo(matrix1[1, 1]).Within(0.001), "yy");
+            Assert.That(matrix2.ty, Is.EqualTo(matrix1[1, 2]).Within(0.001), "ty");
+        }
+
+        [Test]
+        public void TestDeterminant()
+        {
+            var (matrix1,matrix2) = CreateTestMatrix();
+
+            var det1 = matrix1.Determinant();
+            var det2 = matrix2.Determinant();
+
+            Assert.That(det1, Is.EqualTo(det2));
+        }
+
+        [Test]
+        public void TestInvert()
+        {
+            var (matrix1, matrix2) = CreateTestMatrix();
+
+            var inv1 = matrix1.Inverse();
+            var inv2 = matrix2.Invert();
+
+            CompareMatrix(inv1, inv2);
+
         }
 
     }

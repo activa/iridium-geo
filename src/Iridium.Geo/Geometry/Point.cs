@@ -4,7 +4,7 @@ namespace Iridium.Geo
 {
     public sealed class Point : IGeometry, ITransformable<Point>
     {
-        public static Point Zero = new Point(0, 0);
+        public static readonly Point Zero = new Point(0, 0);
 
         public double X { get; }
         public double Y { get; }
@@ -99,15 +99,10 @@ namespace Iridium.Geo
             return new Point(aroundPoint.X * 2 - X, aroundPoint.Y * 2 - Y);
         }
 
-        public static Point operator +(Point p, Vector v)
-        {
-            return new Point(p.X + v.X, p.Y + v.Y);
-        }
+        public static Point operator +(Point p, Vector v) => new Point(p.X + v.X, p.Y + v.Y);
+        public static Point operator -(Point p, Vector v) => new Point(p.X - v.X, p.Y - v.Y);
 
-        public static Point operator -(Point p, Vector v)
-        {
-            return new Point(p.X - v.X, p.Y - v.Y);
-        }
+        public static Vector operator-(Point p1, Point p2) => new Vector(p1.X-p2.X, p1.Y-p2.Y);
 
         public static implicit operator (double x,double y)(Point p) => (p.X, p.Y);
         public static implicit operator Point((double x,double y) p) => new Point(p.x,p.y);

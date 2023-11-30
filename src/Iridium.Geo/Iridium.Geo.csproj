@@ -1,12 +1,28 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netstandard1.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFrameworks>netstandard2.0;netstandard2.1;net6.0;net7.0;net8.0</TargetFrameworks>
+		<LangVersion>11.0</LangVersion>
+		<Version>2.0.2.11291</Version>
+		<Authors>Philippe Leybaert</Authors>
+		<PackageTags>iridium geo geometry geography gis</PackageTags>
+		<RepositoryUrl>https://github.com/activa/iridium-geo</RepositoryUrl>
+		<PackageIcon>icon.png</PackageIcon>
+		<Description>Portable light-weight geometry/geography library</Description>
+		<PackageId>iridium.geo</PackageId>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="..\icon.png">
+			<Pack>True</Pack>
+			<PackagePath>\</PackagePath>
+		</None>
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="iridium.units" Version="2.0.1.7071" />
-    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

@@ -83,32 +83,6 @@ namespace Iridium.Geo
             }
         } 
 
-        /*
-        public Point Intersection(LineSegment ray)
-        {
-            double smallestDistance = double.MaxValue;
-            Point intersectionPoint = null;
-
-            foreach (var lineSegment in Segments)
-            {
-                Point p = lineSegment.Intersection(ray);
-
-                if (p != null)
-                {
-                    double distance = ray.P1.DistanceTo(p);
-
-                    if (distance < smallestDistance)
-                    {
-                        smallestDistance = distance;
-                        intersectionPoint = p;
-                    }
-                }
-            }
-
-            return intersectionPoint;
-        }
-        */
-
         public Poly Simplify(double tolerance)
         {
             return CreatePoly(DouglasPeuckerReduction(Points, tolerance));

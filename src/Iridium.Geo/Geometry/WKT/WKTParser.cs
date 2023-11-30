@@ -115,7 +115,7 @@ namespace Iridium.Geo
             return polygon;
         }
 
-        private MultiPolyline ParseMultiLineString()
+        private MultiPoly ParseMultiLineString()
         {
             NextToken(WKTTokenType.MultilineString);
 
@@ -140,7 +140,7 @@ namespace Iridium.Geo
 
             NextToken();
 
-            return new MultiPolyline(polylines);
+            return new MultiPoly(polylines);
         }
 
         private MultiPoint ParseMultiPoint()

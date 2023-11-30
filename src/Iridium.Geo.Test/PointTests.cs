@@ -50,5 +50,31 @@ namespace Iridium.Geo.Test
             Assert.That(p2.Y, Is.EqualTo(1).Within(0.00001));
         }
 
+        [Test]
+        public void PointVector()
+        {
+            Point p1 = new Point(2,3);
+            Point p2 = new Point(5,5);
+
+            Vector v = p2 - p1;
+
+            Assert.That(v.X, Is.EqualTo(3).Within(0.00001));
+            Assert.That(v.Y, Is.EqualTo(2).Within(0.00001));
+
+            Point p3 = p1 + v;
+
+            Assert.That(p3.X, Is.EqualTo(p2.X).Within(0.00001));
+            Assert.That(p3.Y, Is.EqualTo(p2.Y).Within(0.00001));
+
+        }
+
+        [Test]
+        public void VectorTest()
+        {
+            Vector v = new Vector(5,5);
+
+            Assert.That(v.Magnitude, Is.EqualTo(Math.Sqrt(50)));
+            Assert.That(v.Angle, Is.EqualTo(Math.PI/4));
+        }
     }
 }

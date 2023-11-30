@@ -2,7 +2,7 @@ using System;
 
 namespace Iridium.Geo
 {
-    public class Ellipse : IGeometry, ITransformable<Ellipse>
+    public class Ellipse : IClosedGeometry, ITransformable<Ellipse>
     {
         public LineSegment CordSegment { get; }
         public double Cord { get; }
@@ -10,6 +10,14 @@ namespace Iridium.Geo
         public double RadiusX { get; }
         public double RadiusY { get; }
         public double Angle { get; }
+
+        public Ellipse(Rectangle rect)
+        {
+            Center = rect.Center;
+            RadiusX = rect.Width / 2;
+            RadiusY = rect.Height / 2;
+            Angle = 0;
+        }
 
         public Ellipse(Point center, double radiusX, double radiusY, double angle = 0.0)
         {
@@ -104,6 +112,21 @@ namespace Iridium.Geo
         }
 
         public Ellipse Transform(AffineMatrix2D matrix)
+        {
+            var newCordSegment = CordSegment.Transform(matrix);
+            var newCord = Cord * newCordSegment.Length / CordSegment.Length;
+
+            return new Ellipse(newCordSegment.P1, newCordSegment.P2, newCord);
+        }
+
+        public bool Overlaps(IGeometry other)
+        {
+            throw new NotImplementedException();
+        }
+
+        public double Area => RadiusX * RadiusY * Math.PI;
+
+        public bool IsPointInside(Point p)
         {
             throw new NotImplementedException();
         }

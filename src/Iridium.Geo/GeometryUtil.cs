@@ -26,9 +26,19 @@ namespace Iridium.Geo
             return angle > Math.PI ? (angle - PI2) : angle;
         }
 
+        public static T Translate<T>(this ITranslatable<T> geom, Vector v) where T:ITranslatable<T>
+        {
+            return geom.Translate(v.X, v.Y);
+        }
+
         public static IEnumerable<T> Translate<T>(this IEnumerable<ITranslatable<T>> geometries, double dx, double dy)
         {
             return geometries.Select(p => p.Translate(dx, dy));
+        }
+
+        public static IEnumerable<T> Translate<T>(this IEnumerable<ITranslatable<T>> geometries, Vector v)
+        {
+            return geometries.Select(p => p.Translate(v.X, v.Y));
         }
 
         public static IEnumerable<T> Rotate<T>(this IEnumerable<IRotatable<T>> geometries, double angle, Point origin = null)

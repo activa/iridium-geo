@@ -228,7 +228,7 @@ namespace Iridium.Geo.Geography
 
         public static double CellSize(int precision)
         {
-            if (precision > 12 || precision < 1)
+            if (precision is > 12 or < 1)
                 throw new ArgumentOutOfRangeException(nameof(precision), precision, "precision should be between 1 and 12");
 
             return _CELLSIZES[precision];

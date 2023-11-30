@@ -1,13 +1,18 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.1
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34309.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Iridium.Geo", "Iridium.Geo\Iridium.Geo.csproj", "{935CC53C-66B0-41C2-98BF-40C1C8EDD9B9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iridium.Geo.Test", "Iridium.Geo.Test\Iridium.Geo.Test.csproj", "{F4F8687B-3858-4A8F-8222-9AEC7FCF81B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Iridium.Geo.Playground", "Iridium.Geo.Playground\Iridium.Geo.Playground.csproj", "{91BB2CA2-48B3-409F-8B4D-D3B19CDBAEE7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{163CAED4-55D8-4134-80CF-1C800BF78EA6}"
+	ProjectSection(SolutionItems) = preProject
+		icon.png = icon.png
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

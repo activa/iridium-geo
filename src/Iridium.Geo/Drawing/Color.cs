@@ -13,8 +13,8 @@ namespace Iridium.Geo.Drawing
         private HSBValues _hsb;
         private RGBValues _rgb;
 
-        public RGBValues RGB => _rgb ?? (_rgb = RGBValues.FromHSB(HSB));
-        public HSBValues HSB => _hsb ?? (_hsb = HSBValues.FromRGB(RGB));
+        public RGBValues RGB => _rgb ??= RGBValues.FromHSB(HSB);
+        public HSBValues HSB => _hsb ??= HSBValues.FromRGB(RGB);
 
         public Color(Color c)
         {
